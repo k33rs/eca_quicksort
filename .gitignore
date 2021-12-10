@@ -1,3 +1,4 @@
+.vscode/
 **/*.aux
 **/*.fdb_latexmk
 **/*.fls
@@ -7,3 +8,4 @@
 **/*.snm
 **/*.synctex.gz
 **/*.toc
+**/__pycache__/
