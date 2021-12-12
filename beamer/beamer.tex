@@ -69,7 +69,16 @@
     \end{align*}
 \end{frame}
 \begin{frame}{Average runtime analysis}
-    The pivot is equally likely to be any element between 1 and $n$:
+    Assume random input and first element pivot.
+    The pivot is equally likely to be any element between 1 and n.
+    \begin{align*}
+        T(n) &= \frac{1}{n} \sum_{i=0}^{n-1} \left(T(i) + T(n-i)\right) + cn \\
+        T(1) &= \Theta(1)
+    \end{align*}
+\end{frame}
+\begin{frame}{Average runtime analysis}
+    Assume random input and first element pivot.
+    The pivot is equally likely to be any element between 1 and n.
     \begin{align*}
         T(n) &= \frac{1}{n} \sum_{i=0}^{n-1} \left(T(i) + T(n-i)\right) + cn \\
         T(n) &= \frac{2}{n} \sum_{i=0}^{n-1} T(i) + cn \\
