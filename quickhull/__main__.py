@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
+import argparse
 import random
-import sys
 from .plot import Simulation
 from .helpers import line_dist, find_side
 
@@ -78,18 +78,16 @@ def random_points(n, a, b):
         res.append((random.uniform(a, b), random.uniform(a, b)))
     return res
 
+parser = argparse.ArgumentParser(description='Run the Quickhull algorithm on a set of n random points (x,y) ∈ [a,b]')
+parser.add_argument('n', metavar='n', type=int, help='the number of points in the set')
+parser.add_argument('a', metavar='a', type=int, help='left endpoint of interval [a,b]')
+parser.add_argument('b', metavar='b', type=int, help='right endpoint of inverval [a,b]')
+parser.add_argument('--demo', action='store_true', help='run interactive demo')
+args = parser.parse_args()
 
 sim = Simulation()
-
-if len(sys.argv) == 2 and sys.argv[1] == 'demo':
+if args.demo:
     sim.set_mode(True)
-elif len(sys.argv) != 1:
-    print('usage: python3 -m quickhull [demo]')
-    sys.exit(1)
-
-points = random_points(100, -10, 10)
-# points = (0, 3), (1, 1), (2, 2), (4, 4), (0, 0), (1, 2), (3, 1), (3, 3)
-# points = (0, 0), (0, 4), (-4, 0), (5, 0), (0, -6), (1, 0)
 
 fig = plt.figure(num='quickhull')
 ax = fig.add_subplot(111)
@@ -101,6 +99,7 @@ if sim.mode:
     plt.ion()
     sim.plot_commit('plotting set of points')
 
+points = random_points(args.n, args.a, args.b)
 sim.plot_points(points)
 
 quickhull(points)
