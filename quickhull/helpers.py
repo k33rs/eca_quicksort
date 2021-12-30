@@ -1,3 +1,5 @@
+import random
+
 def line_dist_signed(p1, p2, p):
     """
     Return the distance between the point p
@@ -24,3 +26,10 @@ def line_dist(p1, p2, p):
     and the line joining the points p1 and p2.
     """
     return abs(line_dist_signed(p1, p2, p))
+
+def random_points(n, a, b):
+    """Generate n uniformly random points in [a,b]"""
+    res = []
+    for _ in range(n):
+        res.append((random.uniform(a, b), random.uniform(a, b)))
+    return res
