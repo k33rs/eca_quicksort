@@ -1,30 +1,14 @@
 import matplotlib.pyplot as plt
-import numpy as np
 
 class Simulation:
     def __init__(self):
-        self.mode = None
+        self.demo = None
 
     def set_mode(self, interactive):
-        self.mode = { 'interactive': interactive }
+        self.demo = { 'interactive': interactive }
 
     def __ffw(self):
         self.set_mode(False)
-
-    def project(self, p1, p2, p):
-        """
-        Compute the orthogonal projection of point p
-        on the line joining points p1 and p2.
-        """
-        a1 = np.array(p2) - np.array(p1)
-        a2 = a1.copy()[::-1]
-        a2[0] = -a2[0]
-        a = np.array([a1, a2])
-        b = np.array([
-            p[0] * (p2[0] - p1[0]) + p[1] * (p2[1] - p1[1]),
-            p1[1] * (p2[0] - p1[0]) - p1[0] * (p2[1] - p1[1])
-        ])
-        return np.linalg.solve(a, b)
 
     @staticmethod
     def plot_points(points):
@@ -39,7 +23,7 @@ class Simulation:
 
     def plot_commit(self, print_msg=''):
         """Apply changes to plot."""
-        if self.mode['interactive']:
+        if self.demo['interactive']:
             print(print_msg)
             inp = input('Press Enter to continue (q to quit): ')
             print()

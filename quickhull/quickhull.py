@@ -1,5 +1,5 @@
 from .plot import Simulation
-from .helpers import line_dist, find_side
+from .helpers import line_dist, find_side, project
 
 hull = set()
 lines = set()
@@ -24,22 +24,22 @@ def quickhull_onside(points, p1, p2, side):
     if not pmax:
         hull.add(p1)
         hull.add(p2)
-        if sim.mode:
+        if sim.demo:
             sim.step_sol(p1, p2)
         else:
             lines.add((p1, p2))
         return
 
-    if sim.mode:
+    if sim.demo:
         line = sim.step_in(p1, p2, 'plotting line from {} to {}'.format(p1, p2))
-        proj = sim.project(p1, p2, pmax)
+        proj = project(p1, p2, pmax)
         perp = sim.step_in(pmax, proj, 'partitioning line from {} to {}'.format(p1, p2))
 
-    # find convex hull points on both sides of the line
+    # find convex hull points outside the triangle
     quickhull_onside(points, pmax, p1, -find_side(pmax, p1, p2))
     quickhull_onside(points, pmax, p2, -find_side(pmax, p2, p1))
 
-    if sim.mode:
+    if sim.demo:
         sim.step_out(perp, 'removing partitioning of line from {} to {}'.format(p1, p2))
         sim.step_out(line, 'removing line from {} to {}'.format(p1, p2))
 
@@ -59,14 +59,14 @@ def quickhull(points):
         if p[0] > max_x[0]:
             max_x = p
 
-    if sim.mode:
+    if sim.demo:
         line = sim.step_in(min_x, max_x, 'plotting line from {} to {}'.format(min_x, max_x))
 
     # find the points in the convex hull on both sides of the line joining min_x and max_x
     quickhull_onside(points, min_x, max_x,  1)
     quickhull_onside(points, min_x, max_x, -1)
 
-    if sim.mode:
+    if sim.demo:
         sim.step_out(line, 'removing line from {} to {}'.format(min_x, max_x))
 
     return hull

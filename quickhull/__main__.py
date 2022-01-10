@@ -20,7 +20,7 @@ ax.set_aspect('equal', adjustable='box')
 plt.tick_params(axis='x', which='both', bottom=True, top=False, labelbottom=True)
 plt.tick_params(axis='y', which='both', left=True, right=False, labelleft=True)
 
-if sim.mode:
+if sim.demo:
     plt.ion()
     sim.plot_commit('plotting set of points')
 
@@ -34,13 +34,12 @@ if hull is None:
 print("The points in the convex hull are:\n")
 print(hull, '\n')
 
-filename = 'convex-hull.png'
-
-if sim.mode:
-    plt.savefig(filename)
-    plt.ioff()
-    plt.show()
-else:
+if not sim.demo:
     for p1, p2 in lines:
         sim.plot_line(p1, p2, color='royalblue')
-    plt.savefig(filename)
+
+plt.savefig('convex-hull.png')
+
+if sim.demo:
+    plt.ioff()
+    plt.show()
