@@ -1,13 +1,12 @@
-import matplotlib.pyplot as plt
 import argparse
-import sys
-from .quickhull import quickhull, sim, lines
-from .helpers import random_points
+import matplotlib.pyplot as plt
+from .quickhull_py.data import cli_usage
+from .quickhull_py.helpers import random_points
+from .quickhull_py.quickhull import quickhull, hull, lines, sim
 
-parser = argparse.ArgumentParser(description='Run the Quickhull algorithm on a set of n random points (x,y) ∈ [a,b]')
-parser.add_argument('n', metavar='n', type=int, help='the number of points in the set')
-parser.add_argument('a', metavar='a', type=int, help='left endpoint of interval [a,b]')
-parser.add_argument('b', metavar='b', type=int, help='right endpoint of inverval [a,b]')
+parser = argparse.ArgumentParser(description=cli_usage['description'])
+for arg_name, arg_config in cli_usage['args'].items():
+    parser.add_argument(arg_name, **arg_config)
 parser.add_argument('--demo', action='store_true', help='run interactive demo')
 args = parser.parse_args()
 
@@ -27,9 +26,7 @@ if sim.demo:
 points = random_points(args.n, args.a, args.b)
 sim.plot_points(points)
 
-hull = quickhull(points)
-if hull is None:
-    sys.exit(1)
+quickhull(points)
 
 print("The points in the convex hull are:\n")
 print(hull, '\n')

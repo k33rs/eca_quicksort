@@ -11,8 +11,7 @@ def quickhull_onside(points, p1, p2, side):
     """
     pmax = None
     max_dist = 0
-
-    # find the point with max distance from the line on the specified side
+    # find point pₘ farthest from the line p₁-p₂
     for p in points:
         dist = line_dist(p1, p2, p)
         tside = find_side(p1, p2, p)
@@ -20,7 +19,7 @@ def quickhull_onside(points, p1, p2, side):
             pmax = p
             max_dist = dist
 
-    # if no point is found, add p1 and p2 to the convex hull
+    # if no point is found, add p₁ and p₂ to the convex hull
     if not pmax:
         hull.add(p1)
         hull.add(p2)
@@ -45,12 +44,8 @@ def quickhull_onside(points, p1, p2, side):
 
 def quickhull(points):
     """
-    Find the points in the convex hull, given a set of points of size n.
+    Find the points in the convex hull, given a set of points.
     """
-    if len(points) < 3:
-        print('convex hull not possible')
-        return
-
     # find the points with min and max x coordinates
     min_x, max_x = points[0], points[0]
     for _, p in enumerate(points, 1):
@@ -68,5 +63,3 @@ def quickhull(points):
 
     if sim.demo:
         sim.step_out(line, 'removing line from {} to {}'.format(min_x, max_x))
-
-    return hull
