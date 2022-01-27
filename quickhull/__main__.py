@@ -34,8 +34,7 @@ print(hull, '\n')
 if not sim.demo:
     for p1, p2 in lines:
         sim.plot_line(p1, p2, color='royalblue')
-
-plt.savefig('convex-hull.png')
+    plt.savefig('convex-hull.png')
 
 if sim.demo:
     plt.ioff()
