@@ -5,6 +5,10 @@
 \usepackage{ragged2e}
 \graphicspath{{./img}}
 
+\usepackage{parskip}
+\usepackage{float}
+\usepackage{wrapfig}
+
 \captionsetup{labelfont={bf}}
 
 % Title (and subtitle) of the project
@@ -30,7 +34,80 @@ A short abstract summarising what your project is about and the main results you
 \subsection{The sorting problem}
 
 \section{The algorithm}
+
+
 \subsection{The partitioning problem}
+
+\begin{wrapfigure}{r}{0.5\textwidth}
+  \begin{center}
+   \includegraphics[scale=0.25]{img/recursive_partitioning.png}
+  \end{center}
+  \caption{A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!}
+\end{wrapfigure}
+
+Quicksort belongs to the family of \textit{partition sort} algorithms,
+where a partitioning routine is called recursively until a whole sequence is sorted.
+
+Given an array $A[1,.....,N]$, the partitioning algorithm should split a permutation
+of it, $A'$, into two partitions $U=A'[1,.....,p]$ and $V=A'[p+1,.....,N]$ such that
+$U[i] \leq V[j] \;\, \forall \; i,j \in \{[1,p] , [p+1,N]\}$. 
+By recursively partitioning U and V themselves, base cases will eventually be reached,
+consisting of single-element or empty arrays, which are already sorted.
+\textbf{Figure 1} illustrates the recursive routine.
+
+The following pseudocode recursively sorts a given subarray of $A$. It assumes a partition routine which will be discussed in the following sections.
+
+\begin{verbatim}
+quicksort(A, low, high):
+      if low >= 0 && high >= 0 && low < high then
+            // Reorder A around the pivot in-place such that
+            // the partition A[low],...,A[p] is pointwise
+            // less than or equal to the partition A[p+1],...,A[high]
+            p := partition(A, low, high)
+            // Recursively solve the two partitions without affecting the partition invariant
+            quicksort(A, low, p)
+            quicksort(A, p+1, high)
+\end{verbatim}
+
+\subsection{Pivot selection}
+The partitioning in quicksort relies on a method called pivoting. This consists in picking a value $\gamma$ to be our pivot. Given the array $A$, we then permute it in a way such that every element before $\gamma$ is smaller than it, and every one after it is larger. The internal order in these subarrays is irrelevant, as it will be addressed in further iterations of the algorithm.\\
+Clearly, the pivot choice will have an impact on the efficiency of the algorithm. We divide the selection methods into two categories: one-step and multi-step.\\
+The following paragraphs provide a description using as an example the array $A[1,.....,N]$ introduced above.
+
+\subsubsection{One-step selection}
+These methods only require chosing a value at each iteration and using it as the pivot, the difference being the position of $A$ from which the value is selected.
+
+\begin{itemize}
+\item{\textit{First element}}: set the pivot to be the value $A[1]$.
+\item{\textit{Last element}}: set the pivot to be the value $A[N]$.
+\item{\textit{Central element}}: set the pivot to be the value $A[\lfloor \frac{(N+1)}{2} \rfloor]$ or $A[\lceil \frac{(N+1)}{2} \rceil]$ if N is even, and $A[\frac{N+1}{2}]$ if N is odd.
+\item{\textit{Random element}}: set the pivot to be value $A[r]$, where $r$ is a random number such that $1 \leq r \leq N$.
+\end{itemize}
+
+\subsubsection{Multi-step selection}
+Given that the most efficient case of the partitioning is achieved when picking the median, the following methods involve computing the median of some odd sample of values extracted from the array. The difference among the methods lies in the positions of the array from which the values are taken, and in the sample size. The latter is indicated by the suffix $T$, with most common implementations using $3 \leq T \leq 9$
+
+\begin{itemize}
+\item{\textit{Median-of-T with fixed selection:}} $T$ integers $1 \leq n_{1},....,n_{T} \leq N$ are fixed beforehand. The median of $\{A[n_{1}],.....,A[n_{T}]\}$ is then computed and used as the pivot for the partitioning.
+\item{\textit{Median-of-T with random selection:}} $T$ random integers $1 \leq r_{1},....,r_{T} \leq N$ are generated. The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is then computed and used as the pivot for the partitioning.
+\end{itemize}
+
+\subsection{Partitioning around the pivot}
+mention two main schemes
+Figure 2 illustrates the process of partitioning around a chosen value, 4 in this case. Recalling the previous paragraph, this could have been a one-step selection using a random index.
+
+
+
+
+\begin{figure}[H]
+  \begin{center}
+   \includegraphics[scale=0.5]{img/pivot_partitioning.png}
+  \end{center}
+  \caption{A picture of the same tucan looking the other way!}
+\end{figure}
+
+ 
+
 
 \section{Complexity analysis}
 \subsection{Worst-case analysis}
