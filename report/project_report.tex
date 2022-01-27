@@ -38,13 +38,6 @@ A short abstract summarising what your project is about and the main results you
 
 \subsection{The partitioning problem}
 
-\begin{wrapfigure}{r}{0.5\textwidth}
-  \begin{center}
-   \includegraphics[scale=0.25]{img/recursive_partitioning.png}
-  \end{center}
-  \caption{A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!}
-\end{wrapfigure}
-
 Quicksort belongs to the family of \textit{partition sort} algorithms,
 where a partitioning routine is called recursively until a whole sequence is sorted.
 
@@ -53,7 +46,14 @@ of it, $A'$, into two partitions $U=A'[1,.....,p]$ and $V=A'[p+1,.....,N]$ such 
 $U[i] \leq V[j] \;\, \forall \; i,j \in \{[1,p] , [p+1,N]\}$. 
 By recursively partitioning U and V themselves, base cases will eventually be reached,
 consisting of single-element or empty arrays, which are already sorted.
-\textbf{Figure 1} illustrates the recursive routine.
+Figure \ref{fig:rec-part} illustrates the recursive routine.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.6\textwidth]{recursive_partitioning.png}
+    \caption{A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!}
+    \label{fig:rec-part}
+\end{figure}
 
 The following pseudocode recursively sorts a given subarray of $A$. It assumes a partition routine which will be discussed in the following sections.
 
