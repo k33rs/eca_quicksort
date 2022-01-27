@@ -10,3 +10,6 @@
 **/*.toc
 **/__pycache__/
 **/*.ps
+**/_minted-project_report
+**/*.bbl
+**/*.blg
