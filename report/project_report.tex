@@ -172,6 +172,7 @@ This complexity estimation holds true for all the pivot selection schemes and th
 \subsection{Analysis of \texttt{quicksort} routine}
 
 Now, let's consider the recursive \texttt{quicksort} routine outlined in Algorithm\ref{alg:p1}. The first operation is a $\Theta(1)$ comparison to check if it is a base case -- which requires no additional computation. Otherwise, we incur exactly one call to the \texttt{partition} routine and two calls to the \texttt{quicksort} routine with the two partitions. I.e. if the two partitions have sizes $u$ and $n-u-1$, the complexity of the \texttt{quicksort} routine is: $$T(n) = T_{partition}(n) + T(u) + T(n-u-1) = T(u) + T(n-u-1) + \Theta(n)$$
+
 This is a recursive formula where the partition sizes, $u$ and $n-u-1$, depend on the input data and the pivot selection method. So, to get an explicit formula without the recursion, we need to consider different input and pivot scenarios. We will do this for the following two important cases, which are also the most typical for complexity analysis.
 
 \subsubsection{Worst-case analysis}
@@ -191,6 +192,7 @@ For deterministic pivot selection methods, there is always some hostile input da
 
 Since the locations of the pivots determine the runtime of quicksort for a given input data and we don't have any other information about the pivot, we will consider the prior distribution of the pivot location at each call to \texttt{quicksort} routine to be uniform -- i.e. if the size of the given array is $n$, then its final location can be anywhere between and including 1 and n. So, the average sorting time will be --
 
+Since the locations of the pivots determine the runtime of quicksort for a given input data and we don't have any other information about the pivot, we will consider the prior distribution of the pivot location at each call to \texttt{quicksort} routine to be uniform -- i.e. if the size of the given array is $n$, then its final location can be anywhere between and including 1 and n. So, the average sorting time will be --
 \begin{align*}
 T(n) &= \frac{1}{n}\sum_{k=1}^{n}\big(T(k-1) + T(n-k)\big) + \Theta(n) \\
 &= \frac{1}{n}\big(\sum_{k=1}^{n}T(k-1) + \sum_{k=1}^{n}T(k-1)\big) + \Theta(n) \\
@@ -204,7 +206,7 @@ T(n) &= \frac{1}{n}\sum_{k=1}^{n}\big(T(k-1) + T(n-k)\big) + \Theta(n) \\
 &~~\vdots \\
 \frac{T(2)}{3} &= \frac{T(1)}{2} + \frac{2c}{3} \\
 \shortintertext{Adding up them yields,}
-\frac{T(n)}{n+1} =  \frac{T(1)}{2} + 2c \sum_{k=3}^{n+1}\frac{1}{k} &= \frac{T(1)}{2} + 2c(\log(n+1) + \gamma - \frac{3}{2}) ~~~~~[\text{$\gamma \approx 0.577$ is the Euler's constant}] \\
+\frac{T(n)}{n+1} &=  \frac{T(1)}{2} + 2c \sum_{k=3}^{n+1}\frac{1}{k} = \frac{T(1)}{2} + 2c(\log(n+1) + \gamma - \frac{3}{2}) ~~~~~[\text{$\gamma \approx 0.577$ is the Euler's constant}] \\
 \implies T(n) &= \mathcal{O}(n\log n)
 \end{align*}
 
