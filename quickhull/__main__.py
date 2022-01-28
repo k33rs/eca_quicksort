@@ -4,6 +4,7 @@ from .quickhull_py.data import cli_usage
 from .quickhull_py.helpers import random_points
 from .quickhull_py.quickhull import quickhull, hull, lines, sim
 
+# parse cli args
 parser = argparse.ArgumentParser(description=cli_usage['description'])
 for arg_name, arg_config in cli_usage['args'].items():
     parser.add_argument(arg_name, **arg_config)
@@ -13,6 +14,7 @@ args = parser.parse_args()
 if args.demo:
     sim.set_mode(True)
 
+# init plot
 fig = plt.figure(num='quickhull')
 ax = fig.add_subplot(111)
 ax.set_aspect('equal', adjustable='box')
@@ -23,14 +25,16 @@ if sim.demo:
     plt.ion()
     sim.plot_commit('plotting set of points')
 
+# generate set of points and add to plot
 points = random_points(args.n, args.a, args.b)
 sim.plot_points(points)
 
+# run algorithm
 quickhull(points)
-
 print("The points in the convex hull are:\n")
 print(hull, '\n')
 
+# plot results
 if not sim.demo:
     for p1, p2 in lines:
         sim.plot_line(p1, p2, color='royalblue')
