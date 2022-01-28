@@ -120,23 +120,23 @@ Figure 2 illustrates the process of partitioning around a chosen value, 4 in thi
 
 \section{Computational geometry and the convex hull problem}
 Computational geometry is the study of algorithms for the solution of geometric problems in the Euclidean space \cite{paper}.
-The convex hull problem belongs to this class of problems. It is defined as follows:
+The convex hull problem belongs to this class of problems, and has a wide range of applications across several disciplines
+(e.g. data classification, collision avoidance, image processing and recognition). It is defined as follows:
 given a set of points, find the smallest convex polygon containing all the points \cite{geowiki}.
-The problem has wide range of applications in
-mathematics, statistics, combinatorial optimization, economics, geometric modeling, and ethology \cite{chwiki}.
 For the purpose of this project, we will consider only the planar convex hull (i.e. 2D Euclidean space).
 
 \subsection{The Quickhull algorithm}
-The Quickhull algorithm applies the algorithm design principles of Quicksort to the solution of the convex hull problem.
+The Quickhull algorithm is a variation of Quicksort for the solution of the convex hull problem.
 The algorithms works as follows:
-the set of points is split into smaller subproblems by partitioning.
-The first partitioning step is done by picking the two points with minimum and maximum x-coordinates:
-the line connecting these points splits the set into two subdomains.
-Then, we apply a recursive procedure on both subdomains.
-First, we search for the point that is farthest away from the line.
-If no point is found, then there is no points lying outside the line, so we can add the two points to the convex hull.
-Otherwise, we partition the subset again with the two lines, joining the newfound point and each of the two points, respectively.
-Then, we apply the recursive step again, searching for the solution only in the subsets of points that lie outside the two lines.
+an initial partitioning step is done by picking the two points with minimum and maximum x-coordinates:
+let these two points be $p_1$ and $p_2$, respectively.
+The line connecting $p_1$ and $p_2$ splits the set in two parts.
+Then, for each subset, we search for the farthest point from the line: let this point be $p_{max}$.
+If it exists, we partition each subset again around the lines $\overline{p_1p_{max}}$ and $\overline{p_2p_{max}}$, respectively,
+and we recursively search for the solution among the points that lie outside each line.
+Again, let $p_1$ and $p_2$ be the endpoints of the line in the recursive step.
+The stop condition occurs when $p_{max}$ is not found, as there are no points outside the line $\overline{p_1p_2}$.
+In this case we can add $p_1$ and $p_2$ to the solution set.
 The very first steps of the algorithm are illustrated in Figure \ref{fig:qh-steps}.
 
 \begin{figure}[H]
@@ -150,7 +150,7 @@ The very first steps of the algorithm are illustrated in Figure \ref{fig:qh-step
     \begin{minipage}{.33\linewidth}
 		\includegraphics[width=\linewidth]{quickhull3.png}
 	\end{minipage}
-    \caption{The set of points is partitioned in two subsets (left); the farthest point from the line is found (middle); the triangle's hypotenuse identifies either two points in the solution set, or an outer subset of points, in which part of the solution can be found (right).}
+    \caption{The set of points is partitioned in two subsets (left); the farthest point from the line is found (middle); the triangle's hypotenuse shrinks the subset of solution candidates, to be searched in the recursive step (right).}
     \label{fig:qh-steps}
 \end{figure}
 
@@ -162,40 +162,37 @@ The pseudocode of the algorithm is given below:
 \raggedright We can observe similarities between Quicksort and Quickhull,
 as both are divide-and-conquer and sorting algorithms. The former principle is applied by partitioning the domain
 and splitting the initial problem into smaller subproblems, whereas the latter is applied by comparing
-Euclidean distances of points.
-
+Euclidean distances between points. Again, the complexity is $O(n^2)$ in the worst case and $O(n\log{n})$ in the average case.
 
 \subsection{Distributed Quickhull}
 The Quickhull algorithm is sequential by design,
 as each recursive call depends on the previous ones for the computation of the solution set \cite{qhpaper}.
-Therefore, parallelizing the algorithm by multithreading is not feasible.
-Also, although the recursive step allows to discriminate among subsets of points to compute the solution,
-the selection is done by computing Euclidean distances. Therefore, the size of the point set does not decrease
-in the recursive step and execution gets significantly slow for large input sets.
-However, the set of points can be distributed over multiple processes, and the algorithm does scale by multiprocessing.\\
-The pseudocode of the distributed version of the algorithm is given below:
+Therefore, parallelizing the algorithm by multithreading is not feasible, as it is not possible to independently compute the solution to subproblems.
+However, the set of points can be distributed over multiple processes, and inter-process communication can be used to combine the partial results.\\
+The pseudocode of the distributed version of Quickhull is given below:
 \begin{verbatim}
     parallel pseudocode goes here
 \end{verbatim}
 
 \raggedright As we can see, the procedure is almost identical to the sequential version.
 The key difference is the addition of collective communication (\verb|allreduce|) among processes in the partitioning steps:
-the computation performed by each process to find the first two partitioning points, as well as the farthest point at every iteration,
-is limited to a subset of points, so the results from each process must be combined, in order to obtain the global result.\\
+the computation performed by each process to find the leftmost and rightmost points, as well as the farthest point at every iteration,
+is limited to a subset of points, so the results of all processes must be combined, in order to obtain the global result.
+Note that collective communication is used only for the aforementioned purpose, keeping the communication costs low.\\
 Running the algorithm for large input sizes with different numbers of processes, we can observe significant gains in performance.
 A scaling chart is reported in Figure \ref{fig:qh-scaling}.
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{gpStrongTime.png}
-    \caption{Scaling of distributed Quickhull.}
+    \caption{Performance scaling of distributed Quickhull.}
     \label{fig:qh-scaling}
 \end{figure}
 
-We can observe the gain in performance obtained by the parallel version of the algorithm:
+We can observe the gain in performance obtained by the distributed version of the algorithm:
 by doubling the number of processes, the execution time roughly halves.
 However, we can also observe the effect of over-parallelizing with respect to the problem size:
-for $N=10^2$, 32 processes performe worse than 16.
+e.g. for $N=10^2$, 32 processes perform worse than 16.
 
 %%%%%
 \clearpage
