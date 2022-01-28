@@ -167,14 +167,12 @@ We will also assume an extremely simplified model of execution\footnote{Referenc
 
 Let's consider the Hoare partitioning scheme outlined in Algorithm\ref{alg:p2}. The first operation is selecting a pivot element from the sequence which is $\Theta(1)$ for every pivot selection method mentioned so far.
 
-Once the pivot is selected, we  are scanning the subarray under consideration\footnote{Or the whole array if this is the outermost call in the recursion.}, starting with a pointer in each boundary and moving one of the pointers towards the other in each step. Each step has exactly one comparison between the current pointees, one occasional comparison between the pointers themselves to check if they have met already, and one occasional swap between the current pointees -- i.e. each step is $\Theta(1)$. Since we can move the pointers $n$ times, we have exactly $n = high - low + 1$ steps in a single call to the \texttt{partition(A, low, high)}. So, the total complexity of the \texttt{partition} routine is: $$T_{partition}(n) = \Theta(1) + n\Theta(1) = \Theta(n)$$
-
+Once the pivot is selected, we  are scanning the subarray under consideration\footnote{Or the whole array if this is the outermost call in the recursion.} in $n = high - low + 1$ steps, each involving exactly one comparison between the current pointees, one occasional comparison between the pointers themselves to check if they have met already, and one occasional swap between the current pointees. So, each step is $\Theta(1)$, and the total complexity of the \texttt{partition} routine is: $$T_{partition}(n) = \Theta(1) + n\Theta(1) \approx \Theta(n)$$
 This complexity estimation holds true for all the pivot selection schemes and the partitioning schemes we have discussed, and also for any input data.
 
 \subsection{Analysis of \texttt{quicksort} routine}
 
-Now, let's consider the recursive \texttt{quicksort} routine outlined in Algorithm \ref{alg:p1}. The first operation is a $\Theta(1)$ comparison to check if it is a base case. A base case requires no additional computation, i.e. $\Theta(0)$.
-
+Now, let's consider the recursive \texttt{quicksort} routine outlined in Algorithm\ref{alg:p1}. The first operation is a $\Theta(1)$ comparison to check if it is a base case -- which requires no additional computation. Otherwise, we incur exactly one call to the \texttt{partition} routine and two calls to the \texttt{quicksort} routine with the two partitions. I.e. if the two partitions have sizes $u$ and $n-u-1$, the complexity of the \texttt{quicksort} routine is: $$T(n) = T_{partition}(n) + T(u) + T(n-u-1) = T(u) + T(n-u-1) + \Theta(n)$$
 This is a recursive formula where the partition sizes, $u$ and $n-u-1$, depend on the input data and the pivot selection method. So, to get an explicit formula without the recursion, we need to consider different input and pivot scenarios. We will do this for the following two important cases, which are also the most typical for complexity analysis.
 
 \subsubsection{Worst-case analysis}
@@ -190,7 +188,7 @@ T_{worst}(n) &= \sum_{k=1}^n\Theta(k) = \Theta(n^2)
 
 \subsubsection{Average-case analysis}
 
-For deterministic pivot selection methods, there is always some hostile input data for which the algorithm will take the worst case. However, in practical scenarios, running into a hostile input data is fairly unlikely. We are often interested in the average case analysis that accounts for the prior distribution of the input data to compute the average cost.
+For deterministic pivot selection methods, there is always some hostile input data for which the algorithm will take the worst case. However, in practical scenarios, running into a hostile input data is fairly unlikely. Instead, we are often interested in the average case analysis that accounts for the prior distribution of the input data to compute the average cost.
 
 Since the locations of the pivots determine the runtime of quicksort for a given input data and we don't have any other information about the pivot, we will consider the prior distribution of the pivot location at each call to \texttt{quicksort} routine to be uniform -- i.e. if the size of the given array is $n$, then its final location can be anywhere between and including 1 and n. So, the average sorting time will be --
 
@@ -199,15 +197,15 @@ T(n) &= \frac{1}{n}\sum_{k=1}^{n}\big(T(k-1) + T(n-k)\big) + \Theta(n) \\
 &= \frac{1}{n}\big(\sum_{k=1}^{n}T(k-1) + \sum_{k=1}^{n}T(k-1)\big) + \Theta(n) \\
 &= \frac{2}{n}\sum_{k=0}^{n-1}T(k) + cn ~~~~~[\text{for some constant $c$}]\\
 \implies nT(n) &= 2\sum_{k=0}^{n-1}T(k) + cn^2 \\
-\implies nT(n) - (n-1)T(n-1) &= 2T(n-1) + 2cn - c ~~~~~[\text{Subtracting $(n-1)T(n-1)$ from $nT(n)$}]\\
+\implies nT(n) - (n-1)T(n-1) &= 2T(n-1) + 2cn - c \\
 \implies nT(n) &\approx (n+1)T(n-1) + 2cn \\
 \shortintertext{From this recurrence we get the set of equations,}
 \frac{T(n)}{n+1} &= \frac{T(n-1)}{n} + \frac{2c}{n+1} \\
 \frac{T(n-1)}{n} &= \frac{T(n-2)}{n-1} + \frac{2c}{n} \\
-&\vdots \\
+&~~\vdots \\
 \frac{T(2)}{3} &= \frac{T(1)}{2} + \frac{2c}{3} \\
 \shortintertext{Adding up them yields,}
-\frac{T(n)}{n+1} &=  \frac{T(1)}{2} + 2c \sum_{k=3}^{n+1}\frac{1}{k} = \frac{T(1)}{2} + 2c(\log(n+1) + \gamma - \frac{3}{2}) ~~~~~[\text{$\gamma \approx 0.577$ is the Euler's constant}] \\
+\frac{T(n)}{n+1} =  \frac{T(1)}{2} + 2c \sum_{k=3}^{n+1}\frac{1}{k} &= \frac{T(1)}{2} + 2c(\log(n+1) + \gamma - \frac{3}{2}) ~~~~~[\text{$\gamma \approx 0.577$ is the Euler's constant}] \\
 \implies T(n) &= \mathcal{O}(n\log n)
 \end{align*}
 
