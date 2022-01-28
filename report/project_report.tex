@@ -1,4 +1,5 @@
 \documentclass[]{finalproject}
+\usepackage[algoruled, linesnumbered, noline]{algorithm2e}
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{minted}
@@ -123,21 +124,21 @@ Computational geometry is the study of algorithms for the solution of geometric 
 The convex hull problem belongs to this class of problems, and has a wide range of applications across several disciplines
 (e.g. data classification, collision avoidance, image processing and recognition). It is defined as follows:
 given a set of points, find the smallest convex polygon containing all the points \cite{geowiki}.
-For the purpose of this project, we will consider only the planar convex hull (i.e. 2D Euclidean space).
+For the purpose of this project, we will consider only the planar convex hull, with 2D Cartesian coordinates.
 
 \subsection{The Quickhull algorithm}
 The Quickhull algorithm is a variation of Quicksort for the solution of the convex hull problem.
 The algorithms works as follows:
-an initial partitioning step is done by picking the two points with minimum and maximum x-coordinates:
-let these two points be $p_1$ and $p_2$, respectively.
+an initial partitioning step is done by picking the leftmost and rightmost point.
+Let these two points be $p_1$ and $p_2$, respectively.
 The line connecting $p_1$ and $p_2$ splits the set in two parts.
-Then, for each subset, we search for the farthest point from the line: let this point be $p_{max}$.
-If it exists, we partition each subset again around the lines $\overline{p_1p_{max}}$ and $\overline{p_2p_{max}}$, respectively,
-and we recursively search for the solution among the points that lie outside each line.
-Again, let $p_1$ and $p_2$ be the endpoints of the line in the recursive step.
-The stop condition occurs when $p_{max}$ is not found, as there are no points outside the line $\overline{p_1p_2}$.
-In this case we can add $p_1$ and $p_2$ to the solution set.
+For each subset, we search for the farthest point from the line: let this point be $p_{max}$.
+If it exists, the points lying inside the triangle $\overline{p_1p_2p_{max}}$ are removed from the set,
+and the recursive step is applied on the points that lie outside the lines $\overline{p_1p_{max}}$ and $\overline{p_2p_{max}}$.
+Again, let $p_1$ and $p_2$ be the end points of the line in the recursive step.
+The stop condition occurs when $p_{max}$ is not found, as there are no points outside $\overline{p_1p_2}$.
 The very first steps of the algorithm are illustrated in Figure \ref{fig:qh-steps}.
+The pseudocode is given in Algorithms \ref{alg:qh1} and \ref{alg:qh2}.
 
 \begin{figure}[H]
     \centering
@@ -150,18 +151,40 @@ The very first steps of the algorithm are illustrated in Figure \ref{fig:qh-step
     \begin{minipage}{.33\linewidth}
 		\includegraphics[width=\linewidth]{quickhull3.png}
 	\end{minipage}
-    \caption{The set of points is partitioned in two subsets (left); the farthest point from the line is found (middle); the triangle's hypotenuse shrinks the subset of solution candidates, to be searched in the recursive step (right).}
+    \caption{Three steps of the Quickhull algorithm: the line $\overline{p_1p_2}$ partitions the set of points in two subsets (left); the farthest point $p_{max}$ from the line is found (middle); the triangle $\overline{p_1p_2p_{max}}$ shrinks the solution set (right).}
     \label{fig:qh-steps}
 \end{figure}
 
-The pseudocode of the algorithm is given below:
-\begin{verbatim}
-    pseudocode goes here
-\end{verbatim}
+\begin{algorithm}
+    \caption{Quickhull ($P$)}
+    \label{alg:qh1}
+    P is a set of points with (x, y) coordinates
 
-\raggedright We can observe similarities between Quicksort and Quickhull,
-as both are divide-and-conquer and sorting algorithms. The former principle is applied by partitioning the domain
-and splitting the initial problem into smaller subproblems, whereas the latter is applied by comparing
+    Find the points $p_1$ and $p_2$ with x-coordinates $x_{min}$ and $x_{max}$
+
+    Quickhull\_onside($P$, $p_1$, $p_2$, $1$)
+
+    Quickhull\_onside($P$, $p_1$, $p_2$, $-1$)
+\end{algorithm}
+\begin{algorithm}
+  \caption{Quickhull\_onside ($P$, $p_1$, $p_2$, $s$)}
+  \label{alg:qh2}
+  Let $p_{max}$ be the the point that is farthest from the line joining $p_1$ and $p_2$, on side $s$.
+
+  \If(){$p_{max}$ does not exist}{return}
+
+  Remove from $P$ all points that lie in the triangle formed by $p_1$, $p_2$, $p_{max}$
+
+  Let $s_1$ and $s_2$ be the outer sides of lines $p_1$, $p_{max}$ and $p_2$, $p_{max}$
+
+  Quickhull\_onside($P$, $p_{max}$, $p_1$, $s_1$)
+
+  Quickhull\_onside($P$, $p_{max}$, $p_2$, $s_2$)
+\end{algorithm}
+
+We can observe how Quickhull, just like Quicksort,
+is both a divide-and-conquer and a sorting algorithm. The former approach is implemented by partitioning,
+splitting the initial problem into smaller subproblems in a recursive fashion, whereas the latter is applied by comparing
 Euclidean distances between points. Again, the complexity is $O(n^2)$ in the worst case and $O(n\log{n})$ in the average case.
 
 \subsection{Distributed Quickhull}
@@ -169,19 +192,33 @@ The Quickhull algorithm is sequential by design,
 as each recursive call depends on the previous ones for the computation of the solution set \cite{qhpaper}.
 Therefore, parallelizing the algorithm by multithreading is not feasible, as it is not possible to independently compute the solution to subproblems.
 However, the set of points can be distributed over multiple processes, and inter-process communication can be used to combine the partial results.\\
-The pseudocode of the distributed version of Quickhull is given below:
-\begin{verbatim}
-    parallel pseudocode goes here
-\end{verbatim}
+The pseudocode of the distributed version of Quickhull is given in Algorithm \ref{alg:qh3}.
 
-\raggedright As we can see, the procedure is almost identical to the sequential version.
+\begin{algorithm}
+  \caption{Distributed Quickhull ($P$)}
+  \label{alg:qh3}
+  Each process computes the points with minimum and maximum x-coordinate among their local portion of the dataset, then the global minimum and maximum are computed, and broadcast to all processes (\textit{allreduce}).
+
+  Each process computes the farthest point from the line joining the two points, and the global result is found (\textit{allreduce}).
+
+  Once each process has all three vertices of the triangle, they can remove the points that lie inside the triangle from their dataset.
+
+  The recursive step is repeated just like in the sequential version.
+
+  At the end, the solution is scattered over all processes, so it must be gathered on the root process (\textit{gather}).
+\end{algorithm}
+
+As we can see, the procedure is almost identical to the sequential version.
 The key difference is the addition of collective communication (\verb|allreduce|) among processes in the partitioning steps:
 the computation performed by each process to find the leftmost and rightmost points, as well as the farthest point at every iteration,
 is limited to a subset of points, so the results of all processes must be combined, in order to obtain the global result.
-Note that collective communication is used only for the aforementioned purpose, keeping the communication costs low.\\
+Note that collective communication is used just for the aforementioned purpose, and to combine the final solution on the root process,
+keeping the communication cost low.
+
+\newpage
+\subsubsection{Scaling analysis}
 Running the algorithm for large input sizes with different numbers of processes, we can observe significant gains in performance.
 A scaling chart is reported in Figure \ref{fig:qh-scaling}.
-
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\linewidth]{gpStrongTime.png}
