@@ -7,8 +7,10 @@
 \graphicspath{{./img}}
 
 \usepackage{parskip}
-\usepackage{float}
-\usepackage{wrapfig}
+\let\circledS\undefined % here - PS
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{caption}
 
 \captionsetup{labelfont={bf}}
 
@@ -32,7 +34,20 @@ A short abstract summarising what your project is about and the main results you
 \maketitle
 
 \section{Introduction} \label{introduction}
-\subsection{The sorting problem}
+
+Sorting is a ubiquitous problem in computer science. It is defined as the reordering of a list of elements, based on some criterion.
+More specifically, to be able to sort it, a list must possess following properties:
+
+\begin{itemize}
+\item elements are \textit{swappable} - so that the list can be permuted.
+\item elements are \textit{comparable} - they have total ordering\footnote{reference}.
+\end{itemize}
+
+Additionally, for quicksort, we require the list to be \textit{randomly accessible}.\\
+Quicksort, originally invented in 1962 by Hoare, is still one of the most commonly used sorting algorithms. Sorting has applications in practically every computer science related topic. To give a few examples: search engines, data structures, and computational geometry.\\
+There are many variants of the quicksort algorithm, however, we will only focus on one of them as a representative case.  
+
+
 
 \section{The algorithm}
 
@@ -52,23 +67,22 @@ Figure \ref{fig:rec-part} illustrates the recursive routine.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{recursive_partitioning.png}
-    \caption{A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!A picture of the same tucan looking the other way!}
+    \caption{Tree representation of a partitioning process. 
+    At each level the array(s) are permuted and split into two subarrays, where the condition holds that individual elements in one of them are larger or equal than those in the other.
+    The base case of a branch is reached when an array is reduced to one or zero elements.}
     \label{fig:rec-part}
 \end{figure}
 
 The following pseudocode recursively sorts a given subarray of $A$. It assumes a partition routine which will be discussed in the following sections.
 
-\begin{verbatim}
-quicksort(A, low, high):
-      if low >= 0 && high >= 0 && low < high then
-            // Reorder A around the pivot in-place such that
-            // the partition A[low],...,A[p] is pointwise
-            // less than or equal to the partition A[p+1],...,A[high]
-            p := partition(A, low, high)
-            // Recursively solve the two partitions without affecting the partition invariant
-            quicksort(A, low, p)
-            quicksort(A, p+1, high)
-\end{verbatim}
+\begin{algorithm}
+	\caption{Quicksort ($A$, $low$, $high$)}
+	\label{alg:p1}
+	\If(){$low \geq 0 ~\&\&~ high \geq 0 ~\&\&~ low < high$}{p := partition(A, low, high)\\
+	quicksort(A, low, p-1)\\
+	quicksort(A, p+1, high)}
+\end{algorithm}
+
 
 \subsection{Pivot selection}
 The partitioning in quicksort relies on a method called pivoting. This consists in picking a value $\gamma$ to be our pivot. Given the array $A$, we then permute it in a way such that every element before $\gamma$ is smaller than it, and every one after it is larger. The internal order in these subarrays is irrelevant, as it will be addressed in further iterations of the algorithm.\\
@@ -76,43 +90,140 @@ Clearly, the pivot choice will have an impact on the efficiency of the algorithm
 The following paragraphs provide a description using as an example the array $A[1,.....,N]$ introduced above.
 
 \subsubsection{One-step selection}
-These methods only require chosing a value at each iteration and using it as the pivot, the difference being the position of $A$ from which the value is selected.
+These methods only require chosing a value at each iteration and using it as the pivot, the difference being the position of $A$ from which the value is selected.\\
 
-\begin{itemize}
-\item{\textit{First element}}: set the pivot to be the value $A[1]$.
-\item{\textit{Last element}}: set the pivot to be the value $A[N]$.
-\item{\textit{Central element}}: set the pivot to be the value $A[\lfloor \frac{(N+1)}{2} \rfloor]$ or $A[\lceil \frac{(N+1)}{2} \rceil]$ if N is even, and $A[\frac{N+1}{2}]$ if N is odd.
+\begin{itemize}[partopsep=0pt, parsep=0.3pt, topsep=-\parskip, itemsep=1pt]
+\item{\textit{First element}}: set the pivot to be the value $A[1]$.\\
+\item{\textit{Last element}}: set the pivot to be the value $A[N]$.\\
+\item{\textit{Central element}}: set the pivot to be the value $A[\lfloor \frac{(N+1)}{2} \rfloor]$ or $A[\lceil \frac{(N+1)}{2} \rceil]$ if N is even, and $A[\frac{N+1}{2}]$ if N is odd.\\
 \item{\textit{Random element}}: set the pivot to be value $A[r]$, where $r$ is a random number such that $1 \leq r \leq N$.
 \end{itemize}
 
 \subsubsection{Multi-step selection}
-Given that the most efficient case of the partitioning is achieved when picking the median, the following methods involve computing the median of some odd sample of values extracted from the array. The difference among the methods lies in the positions of the array from which the values are taken, and in the sample size. The latter is indicated by the suffix $T$, with most common implementations using $3 \leq T \leq 9$
+Given that the most efficient case of the partitioning is achieved when picking the median, the following methods involve computing the median of some odd sample of values extracted from the array. The difference among the methods lies in the positions of the array from which the values are taken, and in the sample size. The latter is indicated by the suffix $T$, with most common implementations using $3 \leq T \leq 9$.\\
 
-\begin{itemize}
-\item{\textit{Median-of-T with fixed selection:}} $T$ integers $1 \leq n_{1},....,n_{T} \leq N$ are fixed beforehand. The median of $\{A[n_{1}],.....,A[n_{T}]\}$ is then computed and used as the pivot for the partitioning.
+\begin{itemize}[partopsep=0pt, parsep=0pt, topsep=-\parskip, itemsep=0pt]
+\item{\textit{Median-of-T with fixed selection:}} $T$ integers $1 \leq n_{1},....,n_{T} \leq N$ are fixed beforehand. The median of $\{A[n_{1}],.....,A[n_{T}]\}$ is then computed and used as the pivot for the partitioning.\\
 \item{\textit{Median-of-T with random selection:}} $T$ random integers $1 \leq r_{1},....,r_{T} \leq N$ are generated. The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is then computed and used as the pivot for the partitioning.
 \end{itemize}
 
 \subsection{Partitioning around the pivot}
-mention two main schemes
-Figure 2 illustrates the process of partitioning around a chosen value, 4 in this case. Recalling the previous paragraph, this could have been a one-step selection using a random index.
+There are a variety of procedures to partition a list around a pivot, however, the most commonly used in quicksort are the Lomuto scheme and the Hoare scheme.
+We will be describing and showing the latter, though it is straightforward to see how some modifications would still achieve the same result.\\
+Figure 2 illustrates the process of partitioning around a chosen value, the number 4 in this case. Recalling from the previous paragraph, this could have been a one-step selection using a random index.\\
+Once the pivot value is selected, we set two iterators $i$ and $j$, which are initialized respectively at values $0$ and $N+1$.\\
+Iterator $i$ will always check if the value $A[i] < 4$, whereas $j$ will check if $A[j] \geq 4$.\\
+The algorithm then proceeds as follows:\\
 
-
+\begin{itemize}[partopsep=0pt, parsep=0.3pt, topsep=-\parskip, itemsep=1pt]
+  \item{} \textit{i} increases in steps of 1 until $A[i]$ is not compliant with its condition. It will then stop.
+  \item{} \textit{j} decreases in steps of 1 until $A[j]$ is not compliant with its condition. It will then stop.
+  \item{} the condition $j>i$ is checked. If not met, the partitioning is complete and the algorithm halts, otherwise it proceeds.
+  \item{} the values $A[i]$ and $A[j]$ are swapped.
+  \item{} repeat from step one. 
+\end{itemize}
 
 
 \begin{figure}[H]
   \begin{center}
    \includegraphics[scale=0.5]{img/pivot_partitioning.png}
   \end{center}
-  \caption{A picture of the same tucan looking the other way!}
+  \caption{Partitioning of the array around the chosen pivot $p=4$, in yellow.
+  Blue elements have not been checked yet; red elements are not compliant and yet to be swapped; green elements are in a compliant position and require no more actions. \\
+  \textbf{A)} \textit{i} begins by increasing and stops at the first step, as $7 \ngeq 4$.
+  \textbf{B)-C)-D)} \textit{j} starts decreasing until it encounters $2 \ngeq 4$. Condition $i<j$ is verified, so values $A[i]=7$ and $A[j]=2$ are swapped.
+  \textbf{E)} \textit{i} increases up to the value $4 \nless 4$.
+  \textbf{F)-G)} \textit{j} decreases until it finds $1 \ngeq 4$. Condition $i<j$ is verified, so values $A[i]=4$ and $A[j]=1$ are swapped.
+  \textbf{H)} \textit{i} increases and stops at $4 \nless 4$.
+  \textbf{I)-J)} \textit{j} increases and stops at $0 \ngeq 4$. Condition $i<j$ is not verified, so the algorithm ends. \\
+  Note that all elements to the right of the pivot 4 are greater or equal than it, and all the ones to its left are smaller than it.
+  By recursively repeating this process on the subarrays on each side of the pivot (excluding the pivot itself), an entirely sorted array will be obtained in the end.}
+\label{fig:rec-part2}
 \end{figure}
 
- 
+The alorithm from Figure \ref{fig:rec-part2} is recapitulated in the following pseudocode.
+
+\begin{algorithm}
+	\caption{partition($A$, $low$, $high$)}
+	\label{alg:p2}
+	
+	pivot = selectPivot(A)
+	
+	i, j := low - 1, high + 1
+	
+	loop forever
+	
+	\Indp
+	
+	do i := i + 1 while $A[i] < pivot$
+	
+	do j := j - 1 while $A[j] \geq pivot$
+	
+	\If(){$i \geq j$}{return}
+	
+	swap A[i] with A[j]
+
+\end{algorithm}
+
 
 
 \section{Complexity analysis}
-\subsection{Worst-case analysis}
-\subsection{Average-case analysis}
+
+We will consider the notion of algorithm complexity\footnote{Reference?} to be the growth of its computational cost with respect to some input parameters. In general the cost can be any runtime resources the algorithm needs. Here, we will restrict the analysis to an estimation of how fast the computation time will grow as the size of the input sequence increases.
+
+We will also assume an extremely simplified model of execution\footnote{Reference?} that ignores considerations like cache, locality of reference, hardware architecture -- all of which have significant impact on computation time. In this model, the only relevant sources of computational cost are the two operations -- comparison and swap -- each costing a single unit of time; everything else, including the recursive function calls and random number generations, are considered relatively insignificant.
+
+\subsection{Analysis of \texttt{partition} routine}
+
+Let's consider the Hoare partitioning scheme outlined in \textbf{Pseudocode \#2}. The first operation is selecting a pivot element from the sequence which is $\Theta(1)$ for every pivot selection method described in \textbf{Section \#1}.
+
+Once the pivot is selected, we  are scanning the subarray under consideration\footnote{Or the whole array if this is the outermost call in the recursion.}, starting with a pointer in each boundary and moving one of the pointers towards the other in each step. Each step has exactly one comparison between the current pointees, one occasional comparison between the pointers themselves to check if they have met already, and one occasional swap between the current pointees -- i.e. each step is $\Theta(1)$.
+
+Since we can move the pointers $n$ times, we have exactly $n$ steps in a single call to the \texttt{partition(A, low, high)}, where $n = high - low + 1$ is the length of the subarray. Therefore, the total complexity of the \texttt{partition} routine is: $$T_{partition}(n) = \Theta(1) + n\Theta(1) = \Theta(n)$$
+
+This complexity estimation holds true for all the pivot selection schemes and the partitioning schemes we have discussed, and also for any input data.
+
+\subsection{Analysis of \texttt{quicksort} routine}
+
+Now, let's consider the recursive \texttt{quicksort} routine outlined in \textbf{Pseudocode \#1}. The first operation is a $\Theta(1)$ comparison to check if it is a base case. A base case requires no additional computation, i.e. $\Theta(0)$.
+
+Otherwise, we incur exactly one call to the \texttt{partition} routine and two calls to the \texttt{quicksort} routine with the two partitions. I.e. if the two partitions have sizes $u$ and $n-u$, the complexity of the \texttt{quicksort} routine is: $$T(n) = T_{partition}(n) + T(u) + T(n-u-1) = T(u) + T(n-u-1) + \Theta(n)$$
+
+This is a recursive formula where the partition sizes, $u$ and $n-u-1$, depends on the input data and the pivot selection method. So, to get an explicit formula without the recursion, we need to consider different input and pivot scenarios. We will do this for the following two important cases, which are also the most typical for complexity analysis.
+
+\subsubsection{Worst-case analysis}
+
+The worst case for the \texttt{quicksort} routine is when the partitions are the least balanced, i.e. the pivot element ends up being the largest or the smallest in the subarray under consideration. So,
+\begin{align*}
+T_{worst}(0) &= \Theta(1) \\
+T_{worst}(1) &= \Theta(1) \\
+T_{worst}(n) &= T_{worst}(n-1) + T_{worst}(0) + \Theta(n) \\
+\intertext{Expanding this recurrence until the base case, we find,}
+T_{worst}(n) &= \sum_{k=1}^n\Theta(k) = \Theta(n^2)
+\end{align*}
+
+\subsubsection{Average-case analysis}
+
+For deterministic pivot selection methods, there is always some hostile input data for which the algorithm will take the worst case. However, in practical scenarios, running into a hostile input data is fairly unlikely. We are often interested in the average case analysis that accounts for the prior distribution of the input data to compute the average cost.
+
+Since the location of the pivots determines the runtime of quicksort for a given input data, we will consider a prior distribution of the pivot location at each call to \texttt{quicksort} routine. Let it be uniform -- i.e. if the size of the given array is $n$ and we don't have any other information about the pivot, we assume it can be $k^{th}$ smallest element for any $k = 1, ..., n$.
+\begin{align*}
+T(n) &= \frac{1}{n}\sum_{k=1}^{n}\big(T(k-1) + T(n-k)\big) + \Theta(n) \\
+&= \frac{1}{n}\big(\sum_{k=1}^{n}T(k-1) + \sum_{k=1}^{n}T(k-1)\big) + \Theta(n) \\
+&= \frac{2}{n}\sum_{k=0}^{n-1}T(k) + cn ~~~~~[\text{for some constant $c$}]\\
+\implies nT(n) &= 2\sum_{k=0}^{n-1}T(k) + cn^2 \\
+\implies nT(n) - (n-1)T(n-1) &= 2T(n-1) + 2cn - c ~~~~~[\text{Subtracting $(n-1)T(n-1)$ from $nT(n)$}]\\
+\implies nT(n) &\approx (n+1)T(n-1) + 2cn \\
+\intertext{From this recurrence we get the set of equations,}
+\frac{T(n)}{n+1} &= \frac{T(n-1)}{n} + \frac{2c}{n+1} \\
+\frac{T(n-1)}{n} &= \frac{T(n-2)}{n-1} + \frac{2c}{n} \\
+&\vdots \\
+\frac{T(2)}{3} &= \frac{T(1)}{2} + \frac{2c}{3} \\
+\intertext{Adding up them yields,}
+\frac{T(n)}{n+1} &=  \frac{T(1)}{2} + 2c \sum_{k=3}^{n+1}\frac{1}{k} = \frac{T(1)}{2} + 2c(\log(n+1) + \gamma - \frac{3}{2}) ~~~~~[\text{$\gamma \approx 0.577$ is the Euler's constant}] \\
+\implies T(n) &= \mathcal{O}(n\log n)
+\end{align*}
+
 \subsection{Analysis of randomized Quicksort}
 
 \section{Parallel processing}
@@ -218,7 +329,7 @@ keeping the communication cost low.
 \subsubsection{Scaling analysis}
 Running the algorithm for large input sizes with different numbers of processes, we can observe significant gains in performance.
 A scaling chart is reported in Figure \ref{fig:qh-scaling}.
-\begin{figure}[h!]
+\begin{figure}[H]
     \centering
     \includegraphics[width=0.6\linewidth]{gpStrongTime.png}
     \caption{Performance scaling of distributed Quickhull.}
