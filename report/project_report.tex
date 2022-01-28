@@ -26,7 +26,15 @@
 \end{groupmembers}
 
 \abstract {
-A short abstract summarising what your project is about and the main results you obtained.
+  In this project, we examine Quicksort as a divide-and-conquer sorting algorithm.
+  After presenting the algorithm and its design,
+  we analyze its time complexity, as well as its scaling properties,
+  in order to explain why it has become such a widely popular choice
+  in computer science.
+  We also introduce the problem domain of computational geometry,
+  where the solutions to many problems can be seen as generalizations of Quicksort.
+  Finally, as a practical application, we present the convex hull problem and the Quickhull algorithm,
+  featuring analogous runtime and scaling properties.
 }
 
 
@@ -308,7 +316,7 @@ keeping the communication cost low.
 \subsubsection{Scaling analysis}
 Running the algorithm for large input sizes with different numbers of processes, we can observe significant gains in performance.
 A scaling chart is reported in Figure \ref{fig:qh-scaling}.
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
     \includegraphics[width=0.6\linewidth]{gpStrongTime.png}
     \caption{Performance scaling of distributed Quickhull.}
