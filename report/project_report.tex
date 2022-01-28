@@ -54,7 +54,7 @@ The sorting problem can be defined as the reordering of a sequence of elements, 
 
 Additionally, for many sorting algorithms, such as quicksort, the sequence must also be \textit{randomly accessible}.
 
-There have been many different algorithms invented for the comparison sort problem. Quicksort, originally invented in 1962 by C. A. R. Hoare, is still one of the most commonly used sorting algorithms. The particularly interesting nature of Quicksort is that -- unlike many other sorting algorithms it does not even attemp to achieve the theoretical lower bound of worst-case complexity, i.e. $\Omega(n\log n)$ \cite[p.~193]{clrs}. Instead it makes the trade-off to get a fast average case and a much simpler implementation, making it a very practical choice.
+There have been many different algorithms invented for the comparison sort problem. Quicksort, originally invented\cite{hoare1962quicksort} in 1962 by C. A. R. Hoare, is still one of the most commonly used sorting algorithms. The particularly interesting nature of Quicksort is that -- unlike many other sorting algorithms it does not even attemp to achieve the theoretical lower bound of worst-case complexity, i.e. $\Omega(n\log n)$ \cite[p.~193]{clrs}. Instead it makes the trade-off to get a fast average case and a much simpler implementation, making it a very practical choice.
 
 There are many variants of the quicksort algorithm, however, we will only focus on the worst-case and average-case analysis of one representative example.
 
@@ -105,8 +105,10 @@ These methods only require chosing a value at each iteration and using it as the
 Given that the most efficient case of the partitioning is achieved when picking the median, the following methods involve computing the median of some odd sample of values extracted from the array. The difference among the methods lies in the positions of the array from which the values are taken, and in the sample size. The latter is indicated by the suffix $T$, with most common implementations using $3 \leq T \leq 9$.
 
 \begin{itemize}
-\item \textit{Median-of-T with fixed selection}: $T$ integers $1 \leq n_{1},....,n_{T} \leq N$ are fixed beforehand. The median of $\{A[n_{1}],.....,A[n_{T}]\}$ is then computed and used as the pivot for the partitioning.
-\item \textit{Median-of-T with random selection}: $T$ random integers $1 \leq r_{1},....,r_{T} \leq N$ are generated. The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is then computed and used as the pivot for the partitioning.
+\item \textit{Median-of-T with fixed selection}: $T$ integers $1 \leq n_{1},....,n_{T} \leq N$ are fixed beforehand. \\
+The median of $\{A[n_{1}],.....,A[n_{T}]\}$ is then computed and used as the pivot for the partitioning.
+\item \textit{Median-of-T with random selection}: $T$ random integers $1 \leq r_{1},....,r_{T} \leq N$ are generated. \\
+The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is then computed and used as the pivot for the partitioning.
 \end{itemize}
 
 \subsection{Partitioning around the pivot}
@@ -218,7 +220,7 @@ T(n) &= \frac{1}{n}\sum_{k=1}^{n}\big(T(k-1) + T(n-k)\big) + \Theta(n) \\
 \subsection{Parallelizing Quicksort}
 
 \section{Computational geometry and the convex hull problem}
-Computational geometry is the study of algorithms for the solution of geometric problems in the Euclidean space \cite{paper}.
+Computational geometry is the study of algorithms for the solution of geometric problems in the Euclidean space \cite{jaja2000perspective}.
 The convex hull problem belongs to this class of problems, and has a wide range of applications across several disciplines
 (e.g. data classification, collision avoidance, image processing and recognition). It is defined as follows:
 given a set of points, find the smallest convex polygon containing all the points \cite{geowiki}.
@@ -287,7 +289,7 @@ Euclidean distances between points. Again, the complexity is $O(n^2)$ in the wor
 
 \subsection{Distributed Quickhull}
 The Quickhull algorithm is sequential by design,
-as each recursive call depends on the previous ones for the computation of the solution set \cite{qhpaper}.
+as each recursive call depends on the previous ones for the computation of the solution set \cite{rameshconvex}.
 Therefore, parallelizing the algorithm by multithreading is not feasible, as it is not possible to independently compute the solution to subproblems.
 However, the set of points can be distributed over multiple processes, and inter-process communication can be used to combine the partial results.\\
 The pseudocode of the distributed version of Quickhull is given in Algorithm \ref{alg:qh3}.
@@ -316,11 +318,11 @@ keeping the communication cost low.
 \subsubsection{Scaling analysis}
 Running the algorithm for large input sizes with different numbers of processes, we can observe significant gains in performance.
 A scaling chart is reported in Figure \ref{fig:qh-scaling}.
-\begin{figure}[h!]
-    \centering
-    \includegraphics[width=0.6\linewidth]{gpStrongTime.png}
-    \caption{Performance scaling of distributed Quickhull.}
-    \label{fig:qh-scaling}
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.5\linewidth]{gpStrongTime.png}
+\caption{Performance scaling of distributed Quickhull.}
+\label{fig:qh-scaling}
 \end{figure}
 
 We can observe the gain in performance obtained by the distributed version of the algorithm:
