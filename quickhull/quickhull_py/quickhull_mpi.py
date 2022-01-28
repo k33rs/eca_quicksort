@@ -7,7 +7,7 @@ hull = set()
 lines = set()
 sim = Simulation()
 
-def choose_op(t1, t2, op):
+def reduce_op(t1, t2, op):
     """
     Choose one tuple by evaluating the given operator on the first items.
     """
@@ -27,7 +27,7 @@ def quickhull_onside(points, p1, p2, side, comm):
             pmax = p
             max_dist = dist
 
-    max_dist, pmax = comm.allreduce((max_dist, pmax), lambda t1, t2: choose_op(t1, t2, gt))
+    max_dist, pmax = comm.allreduce((max_dist, pmax), lambda t1, t2: reduce_op(t1, t2, gt))
     # if no point is found, add p₁ and p₂ to the convex hull
     if not pmax:
         if comm.Get_rank() == 0:
@@ -53,8 +53,8 @@ def quickhull(points, comm):
         if p[0] > max_x[0]:
             max_x = p
 
-    min_x = comm.allreduce(min_x, lambda p1, p2: choose_op(p1, p2, lt))
-    max_x = comm.allreduce(max_x, lambda p1, p2: choose_op(p1, p2, gt))
+    min_x = comm.allreduce(min_x, lambda p1, p2: reduce_op(p1, p2, lt))
+    max_x = comm.allreduce(max_x, lambda p1, p2: reduce_op(p1, p2, gt))
     # find the points in the convex hull on both sides of the line joining min_x and max_x
     quickhull_onside(points, min_x, max_x,  1, comm)
     quickhull_onside(points, min_x, max_x, -1, comm)
