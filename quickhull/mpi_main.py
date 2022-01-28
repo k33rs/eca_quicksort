@@ -4,7 +4,7 @@ from mpi4py import MPI
 import time
 from quickhull_py.data import cli_usage, Discretization, Domain
 from quickhull_py.helpers import random_points
-from quickhull_py.quickhull_mpi import quickhull, hull, lines, sim
+from quickhull_py.quickhull_mpi import quickhull, lines, sim
 
 if __name__ == "__main__":
     # parse cli args
@@ -28,7 +28,7 @@ if __name__ == "__main__":
     points_local = list(filter(lambda p: domain.includes(p), points_global))
     # run algorithm - measure time (sec)
     timespent = - time.perf_counter()
-    quickhull(points_local, comm)
+    hull = quickhull(points_local, comm)
     timespent += time.perf_counter()
     # plot results
     if rank == 0:

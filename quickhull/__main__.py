@@ -2,7 +2,7 @@ import argparse
 import matplotlib.pyplot as plt
 from .quickhull_py.data import cli_usage
 from .quickhull_py.helpers import random_points
-from .quickhull_py.quickhull import quickhull, hull, lines, sim
+from .quickhull_py.quickhull import quickhull, lines, sim
 
 # parse cli args
 parser = argparse.ArgumentParser(description=cli_usage['description'])
@@ -32,10 +32,10 @@ sim.plot_points(points)
 # run algorithm
 quickhull(points)
 print("The points in the convex hull are:\n")
-print(hull, '\n')
+print(points, '\n')
 
 # plot results
-if not sim.demo:
+if sim.demo is None:
     for p1, p2 in lines:
         sim.plot_line(p1, p2, color='royalblue')
     plt.savefig('convex-hull.png')
