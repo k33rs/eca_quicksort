@@ -6,7 +6,7 @@
 \usepackage{ragged2e}
 \graphicspath{{./img}}
 
-\usepackage{parskip}
+\usepackage[parfill]{parskip}
 \let\circledS\undefined % here - PS
 \usepackage{amssymb}
 \usepackage{enumitem}
@@ -35,19 +35,16 @@ A short abstract summarising what your project is about and the main results you
 
 \section{Introduction} \label{introduction}
 
-Sorting is a ubiquitous problem in computer science. It is defined as the reordering of a list of elements, based on some criterion.
-More specifically, to be able to sort it, a list must possess following properties:
+Sorting is a ubiquitous problem in computer science, with applications in practically every subfield -- data structures, computation geometry, search engines, just to give a few examples.
+
+The sorting problem can be defined as the reordering of a sequence of elements, based on some ordering criterion. More specifically, to be able to sort it, a sequence must possess following two properties\footnote{Either of these requirements can be relaxed for a relaxed variant of the sorting problem. Additionally, for quicksort, we require the list to be \textit{randomly accessible}.}:
 
 \begin{itemize}
-\item elements are \textit{swappable} - so that the list can be permuted.
-\item elements are \textit{comparable} - they have total ordering\footnote{reference}.
+\item Its elements are \textit{swappable}: So that the list can be permuted in-place\footnote{I.e. modifying the original sequence object, instead of creating a new one.}.
+\item Any two of its elements are \textit{comparable}: I.e. the elements have total ordering.
 \end{itemize}
 
-Additionally, for quicksort, we require the list to be \textit{randomly accessible}.\\
-Quicksort, originally invented in 1962 by Hoare, is still one of the most commonly used sorting algorithms. Sorting has applications in practically every computer science related topic. To give a few examples: search engines, data structures, and computational geometry.\\
-There are many variants of the quicksort algorithm, however, we will only focus on one of them as a representative case.  
-
-
+While it can be shown that the lower bound of any comparison sorts is $\Omega(n\log n)$ \cite[p.~193]{clrs} with respect to the input size, there have been many different algorithms invented with different approaches to the comparison sorting problem. Quicksort, originally invented in 1962 by C. A. R. Hoare, is still one of the most commonly used sorting algorithms. There are many variants of the quicksort algorithm, however, we will only focus on one representative example.
 
 \section{The algorithm}
 
@@ -59,7 +56,7 @@ where a partitioning routine is called recursively until a whole sequence is sor
 
 Given an array $A[1,.....,N]$, the partitioning algorithm should split a permutation
 of it, $A'$, into two partitions $U=A'[1,.....,p]$ and $V=A'[p+1,.....,N]$ such that
-$U[i] \leq V[j] \;\, \forall \; i,j \in \{[1,p] , [p+1,N]\}$. 
+$U[i] \leq V[j] \;\, \forall \; i,j \in \{[1,p] , [p+1,N]\}$.
 By recursively partitioning U and V themselves, base cases will eventually be reached,
 consisting of single-element or empty arrays, which are already sorted.
 Figure \ref{fig:rec-part} illustrates the recursive routine.
@@ -67,7 +64,7 @@ Figure \ref{fig:rec-part} illustrates the recursive routine.
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.6\textwidth]{recursive_partitioning.png}
-    \caption{Tree representation of a partitioning process. 
+    \caption{Tree representation of a partitioning process.
     At each level the array(s) are permuted and split into two subarrays, where the condition holds that individual elements in one of them are larger or equal than those in the other.
     The base case of a branch is reached when an array is reduced to one or zero elements.}
     \label{fig:rec-part}
@@ -120,7 +117,7 @@ The algorithm then proceeds as follows:\\
   \item{} \textit{j} decreases in steps of 1 until $A[j]$ is not compliant with its condition. It will then stop.
   \item{} the condition $j>i$ is checked. If not met, the partitioning is complete and the algorithm halts, otherwise it proceeds.
   \item{} the values $A[i]$ and $A[j]$ are swapped.
-  \item{} repeat from step one. 
+  \item{} repeat from step one.
 \end{itemize}
 
 
@@ -146,23 +143,22 @@ The alorithm from Figure \ref{fig:rec-part2} is recapitulated in the following p
 \begin{algorithm}
 	\caption{partition($A$, $low$, $high$)}
 	\label{alg:p2}
-	
-	pivot = selectPivot(A)
-	
-	i, j := low - 1, high + 1
-	
-	loop forever
-	
-	\Indp
-	
-	do i := i + 1 while $A[i] < pivot$
-	
-	do j := j - 1 while $A[j] \geq pivot$
-	
-	\If(){$i \geq j$}{return}
-	
-	swap A[i] with A[j]
 
+	pivot = selectPivot(A)
+
+	i, j := low - 1, high + 1
+
+	loop forever
+
+	\Indp
+
+	do i := i + 1 while $A[i] < pivot$
+
+	do j := j - 1 while $A[j] \geq pivot$
+
+	\If(){$i \geq j$}{return}
+
+	swap A[i] with A[j]
 \end{algorithm}
 
 
