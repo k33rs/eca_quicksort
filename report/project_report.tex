@@ -133,10 +133,10 @@ an initial partitioning step is done by picking the leftmost and rightmost point
 Let these two points be $p_1$ and $p_2$, respectively.
 The line connecting $p_1$ and $p_2$ splits the set in two parts.
 For each subset, we search for the farthest point from the line: let this point be $p_{max}$.
-If it exists, the points lying inside the triangle $\overline{p_1p_2p_{max}}$ are removed from the set,
-and the recursive step is applied on the points that lie outside the lines $\overline{p_1p_{max}}$ and $\overline{p_2p_{max}}$.
+If it exists, the points lying inside the triangle $p_1p_2p_{max}$ are removed from the set,
+and the recursive step is applied on the points that lie outside the lines $p_1p_{max}$ and $p_2p_{max}$.
 Again, let $p_1$ and $p_2$ be the end points of the line in the recursive step.
-The stop condition occurs when $p_{max}$ is not found, as there are no points outside $\overline{p_1p_2}$.
+The stop condition occurs when $p_{max}$ is not found, as there are no points outside $p_1p_2$.
 The very first steps of the algorithm are illustrated in Figure \ref{fig:qh-steps}.
 The pseudocode is given in Algorithms \ref{alg:qh1} and \ref{alg:qh2}.
 
@@ -151,7 +151,7 @@ The pseudocode is given in Algorithms \ref{alg:qh1} and \ref{alg:qh2}.
     \begin{minipage}{.33\linewidth}
 		\includegraphics[width=\linewidth]{quickhull3.png}
 	\end{minipage}
-    \caption{Three steps of the Quickhull algorithm: the line $\overline{p_1p_2}$ partitions the set of points in two subsets (left); the farthest point $p_{max}$ from the line is found (middle); the triangle $\overline{p_1p_2p_{max}}$ shrinks the solution set (right).}
+    \caption{Three steps of the Quickhull algorithm: the line $p_1p_2$ partitions the set of points in two subsets (left); the farthest point $p_{max}$ from the line is found (middle); the triangle $p_1p_2p_{max}$ shrinks the solution set (right).}
     \label{fig:qh-steps}
 \end{figure}
 
@@ -169,13 +169,13 @@ The pseudocode is given in Algorithms \ref{alg:qh1} and \ref{alg:qh2}.
 \begin{algorithm}
   \caption{Quickhull\_onside ($P$, $p_1$, $p_2$, $s$)}
   \label{alg:qh2}
-  Let $p_{max}$ be the the point that is farthest from the line joining $p_1$ and $p_2$, on side $s$.
+  Let $p_{max}$ be the the point that is farthest from the line $p_1p_2$, on side $s$.
 
   \If(){$p_{max}$ does not exist}{return}
 
-  Remove from $P$ all points that lie in the triangle formed by $p_1$, $p_2$, $p_{max}$
+  Remove from $P$ all points that lie in the triangle $p_1p_2p_{max}$
 
-  Let $s_1$ and $s_2$ be the outer sides of lines $p_1$, $p_{max}$ and $p_2$, $p_{max}$
+  Let $s_1$ and $s_2$ be the outer sides of lines $p_1p_{max}$ and $p_2p_{max}$
 
   Quickhull\_onside($P$, $p_{max}$, $p_1$, $s_1$)
 
@@ -209,19 +209,18 @@ The pseudocode of the distributed version of Quickhull is given in Algorithm \re
 \end{algorithm}
 
 As we can see, the procedure is almost identical to the sequential version.
-The key difference is the addition of collective communication (\verb|allreduce|) among processes in the partitioning steps:
+The key difference is the use of interprocess communication in the partitioning steps:
 the computation performed by each process to find the leftmost and rightmost points, as well as the farthest point at every iteration,
 is limited to a subset of points, so the results of all processes must be combined, in order to obtain the global result.
-Note that collective communication is used just for the aforementioned purpose, and to combine the final solution on the root process,
+Note that communication is used just for the aforementioned purpose, and to combine the final solution on the root process,
 keeping the communication cost low.
 
-\newpage
 \subsubsection{Scaling analysis}
 Running the algorithm for large input sizes with different numbers of processes, we can observe significant gains in performance.
 A scaling chart is reported in Figure \ref{fig:qh-scaling}.
-\begin{figure}[H]
+\begin{figure}[h!]
     \centering
-    \includegraphics[width=0.7\linewidth]{gpStrongTime.png}
+    \includegraphics[width=0.6\linewidth]{gpStrongTime.png}
     \caption{Performance scaling of distributed Quickhull.}
     \label{fig:qh-scaling}
 \end{figure}

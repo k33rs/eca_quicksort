@@ -21,4 +21,4 @@ do
     echo >> plot.data
 done
 
-gnuplot gp4strong.gp
+gnuplot gpstrong.gp
