@@ -37,108 +37,74 @@ A short abstract summarising what your project is about and the main results you
 
 Sorting is a ubiquitous problem in computer science, with applications in practically every subfield -- data structures, computation geometry, search engines, just to give a few examples.
 
-The sorting problem can be defined as the reordering of a sequence of elements, based on some ordering criterion. More specifically, to be able to sort it, a sequence must possess following two properties\footnote{Either of these requirements can be relaxed for a relaxed variant of the sorting problem. Additionally, for quicksort, we require the list to be \textit{randomly accessible}.}:
+The sorting problem can be defined as the reordering of a sequence of elements, based on some ordering criterion. More specifically, to be able to sort it, a sequence must possess following two properties\footnote{Either of these requirements can be relaxed for a relaxed variant of the sorting problem.}:
 
 \begin{itemize}
 \item Its elements are \textit{swappable}: So that the list can be permuted in-place\footnote{I.e. modifying the original sequence object, instead of creating a new one.}.
 \item Any two of its elements are \textit{comparable}: I.e. the elements have total ordering.
 \end{itemize}
 
-While it can be shown that the lower bound of any comparison sorts is $\Omega(n\log n)$ \cite[p.~193]{clrs} with respect to the input size, there have been many different algorithms invented with different approaches to the comparison sorting problem. Quicksort, originally invented in 1962 by C. A. R. Hoare, is still one of the most commonly used sorting algorithms. There are many variants of the quicksort algorithm, however, we will only focus on one representative example.
+Additionally, for many sorting algorithms, such as quicksort, the sequence must also be \textit{randomly accessible}.
+
+There have been many different algorithms invented for the comparison sort problem. Quicksort, originally invented in 1962 by C. A. R. Hoare, is still one of the most commonly used sorting algorithms. The particularly interesting nature of Quicksort is that -- unlike many other sorting algorithms it does not even attemp to achieve the theoretical lower bound of worst-case complexity, i.e. $\Omega(n\log n)$ \cite[p.~193]{clrs}. Instead it makes the trade-off to get a fast average case and a much simpler implementation, making it a very practical choice.
+
+There are many variants of the quicksort algorithm, however, we will only focus on the worst-case and average-case analysis of one representative example.
 
 \section{The algorithm}
 
-
 \subsection{The partitioning problem}
 
-Quicksort belongs to the family of \textit{partition sort} algorithms,
-where a partitioning routine is called recursively until a whole sequence is sorted.
+Quicksort belongs to the family of \textit{partition sort} algorithms, where a partitioning routine is called recursively until a whole sequence is sorted.
 
-Given an array $A[1,.....,N]$, the partitioning algorithm should split a permutation
-of it, $A'$, into two partitions $U=A'[1,.....,p]$ and $V=A'[p+1,.....,N]$ such that
-$U[i] \leq V[j] \;\, \forall \; i,j \in \{[1,p] , [p+1,N]\}$.
-By recursively partitioning U and V themselves, base cases will eventually be reached,
-consisting of single-element or empty arrays, which are already sorted.
-Figure \ref{fig:rec-part} illustrates the recursive routine.
+Given an array $A[1,.....,N]$, the partitioning algorithm should split a permutation of it, $A'$, into two partitions $U=A'[1,.....,p]$ and $V=A'[p+1,.....,N]$ such that $U[i] \leq V[j] \;\, \forall \; i \in [1,p], j \in [p+1,N]$. By recursively partitioning U and V themselves, base cases will eventually be reached, consisting of single-element or empty arrays, which are already sorted. Figure \ref{fig:rec-part} illustrates the recursive routine.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.6\textwidth]{recursive_partitioning.png}
-    \caption{Tree representation of a partitioning process.
-    At each level the array(s) are permuted and split into two subarrays, where the condition holds that individual elements in one of them are larger or equal than those in the other.
-    The base case of a branch is reached when an array is reduced to one or zero elements.}
-    \label{fig:rec-part}
+\centering
+\includegraphics[width=0.5\textwidth]{recursive_partitioning.png}
+\caption{Tree representation of a partitioning process.
+At each level the array(s) are permuted and split into two subarrays, where the condition holds that individual elements in one of them are larger or equal than those in the other.
+The base case of a branch is reached when an array is reduced to one or zero elements.}
+\label{fig:rec-part}
 \end{figure}
 
-The following pseudocode recursively sorts a given subarray of $A$. It assumes a partition routine which will be discussed in the following sections.
+The following pseudocode recursively sorts a given subarray of $A$. It assumes a \texttt{partition} routine which will be discussed in the following sections. Also, the \texttt{partition} routine will move one element (called \textit{pivot}) to its final location -- so that element can be excluded from the recursive calls.
 
 \begin{algorithm}
-	\caption{Quicksort ($A$, $low$, $high$)}
-	\label{alg:p1}
-	\If(){$low \geq 0 ~\&\&~ high \geq 0 ~\&\&~ low < high$}{p := partition(A, low, high)\\
-	quicksort(A, low, p-1)\\
-	quicksort(A, p+1, high)}
+\caption{Quicksort ($A$, $low$, $high$)}
+\label{alg:p1}
+\If(){$low \geq 0 ~\&\&~ high \geq 0 ~\&\&~ low < high$}{pivot := partition(A, low, high)\\
+quicksort(A, low, pivot-1)\\
+quicksort(A, pivot+1, high)}
 \end{algorithm}
 
 
 \subsection{Pivot selection}
-The partitioning in quicksort relies on a method called pivoting. This consists in picking a value $\gamma$ to be our pivot. Given the array $A$, we then permute it in a way such that every element before $\gamma$ is smaller than it, and every one after it is larger. The internal order in these subarrays is irrelevant, as it will be addressed in further iterations of the algorithm.\\
-Clearly, the pivot choice will have an impact on the efficiency of the algorithm. We divide the selection methods into two categories: one-step and multi-step.\\
-The following paragraphs provide a description using as an example the array $A[1,.....,N]$ introduced above.
+The partitioning in quicksort relies on a method called pivoting. This consists in picking a value $\gamma$ to be our pivot. Given the array $A$, we then permute it in a way such that every element before $\gamma$ is smaller than it, and every one after it is larger. The internal order in these subarrays is irrelevant, as it will be addressed in further iterations of the algorithm.
+
+Clearly, the pivot choice will have an impact on the efficiency of the algorithm. We divide the selection methods into two categories: one-step and multi-step. These are discussed using an example the array $A[1,.....,N]$ as follows.
 
 \subsubsection{One-step selection}
-These methods only require chosing a value at each iteration and using it as the pivot, the difference being the position of $A$ from which the value is selected.\\
+These methods only require chosing a value at each iteration and using it as the pivot, the difference being the position of $A$ from which the value is selected.
 
 \begin{itemize}
-\item{\textit{First element}}: set the pivot to be the value $A[1]$.
-\item{\textit{Last element}}: set the pivot to be the value $A[N]$.
-\item{\textit{Central element}}: set the pivot to be the value $A[\lfloor \frac{(N+1)}{2} \rfloor]$ or $A[\lceil \frac{(N+1)}{2} \rceil]$ if N is even, and $A[\frac{N+1}{2}]$ if N is odd.
-\item{\textit{Random element}}: set the pivot to be value $A[r]$, where $r$ is a random number such that $1 \leq r \leq N$.
+\item \textit{First element}: Set the pivot to be the value $A[1]$.
+\item \textit{Last element}: Set the pivot to be the value $A[N]$.
+\item \textit{Central element}: Set the pivot to be the value $A[\lfloor \frac{(N+1)}{2} \rfloor]$ or $A[\lceil \frac{(N+1)}{2} \rceil]$ if N is even, and $A[\frac{N+1}{2}]$ if N is odd.
+\item \textit{Random element}: Set the pivot to be value $A[r]$, where $r$ is a random number such that $1 \leq r \leq N$.
 \end{itemize}
 
 \subsubsection{Multi-step selection}
-Given that the most efficient case of the partitioning is achieved when picking the median, the following methods involve computing the median of some odd sample of values extracted from the array. The difference among the methods lies in the positions of the array from which the values are taken, and in the sample size. The latter is indicated by the suffix $T$, with most common implementations using $3 \leq T \leq 9$.\\
+Given that the most efficient case of the partitioning is achieved when picking the median, the following methods involve computing the median of some odd sample of values extracted from the array. The difference among the methods lies in the positions of the array from which the values are taken, and in the sample size. The latter is indicated by the suffix $T$, with most common implementations using $3 \leq T \leq 9$.
 
 \begin{itemize}
-\item{\textit{Median-of-T with fixed selection:}} $T$ integers $1 \leq n_{1},....,n_{T} \leq N$ are fixed beforehand. The median of $\{A[n_{1}],.....,A[n_{T}]\}$ is then computed and used as the pivot for the partitioning.
-\item{\textit{Median-of-T with random selection:}} $T$ random integers $1 \leq r_{1},....,r_{T} \leq N$ are generated. The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is then computed and used as the pivot for the partitioning.
+\item \textit{Median-of-T with fixed selection}: $T$ integers $1 \leq n_{1},....,n_{T} \leq N$ are fixed beforehand. The median of $\{A[n_{1}],.....,A[n_{T}]\}$ is then computed and used as the pivot for the partitioning.
+\item \textit{Median-of-T with random selection}: $T$ random integers $1 \leq r_{1},....,r_{T} \leq N$ are generated. The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is then computed and used as the pivot for the partitioning.
 \end{itemize}
 
 \subsection{Partitioning around the pivot}
-There are a variety of procedures to partition a list around a pivot, however, the most commonly used in quicksort are the Lomuto scheme and the Hoare scheme.
-We will be describing and showing the latter, though it is straightforward to see how some modifications would still achieve the same result.\\
-Figure 2 illustrates the process of partitioning around a chosen value, the number 4 in this case. Recalling from the previous paragraph, this could have been a one-step selection using a random index.\\
-Once the pivot value is selected, we set two iterators $i$ and $j$, which are initialized respectively at values $0$ and $N+1$.\\
-Iterator $i$ will always check if the value $A[i] < 4$, whereas $j$ will check if $A[j] \geq 4$.\\
-The algorithm then proceeds as follows:\\
+There are several schemes to partition a list around a pivot. Two common ones are the Hoare scheme and the Lomuto scheme. We will be describing and showing the former -- which is a bit more efficient, but also a bit more complicated too.
 
-\begin{itemize}
-  \item{} \textit{i} increases in steps of 1 until $A[i]$ is not compliant with its condition. It will then stop.
-  \item{} \textit{j} decreases in steps of 1 until $A[j]$ is not compliant with its condition. It will then stop.
-  \item{} the condition $j>i$ is checked. If not met, the partitioning is complete and the algorithm halts, otherwise it proceeds.
-  \item{} the values $A[i]$ and $A[j]$ are swapped.
-  \item{} repeat from step one.
-\end{itemize}
-
-
-\begin{figure}[H]
-  \begin{center}
-   \includegraphics[scale=0.5]{img/pivot_partitioning.png}
-  \end{center}
-  \caption{Partitioning of the array around the chosen pivot $p=4$, in yellow.
-  Blue elements have not been checked yet; red elements are not compliant and yet to be swapped; green elements are in a compliant position and require no more actions. \\
-  \textbf{A)} \textit{i} begins by increasing and stops at the first step, as $7 \ngeq 4$.
-  \textbf{B)-C)-D)} \textit{j} starts decreasing until it encounters $2 \ngeq 4$. Condition $i<j$ is verified, so values $A[i]=7$ and $A[j]=2$ are swapped.
-  \textbf{E)} \textit{i} increases up to the value $4 \nless 4$.
-  \textbf{F)-G)} \textit{j} decreases until it finds $1 \ngeq 4$. Condition $i<j$ is verified, so values $A[i]=4$ and $A[j]=1$ are swapped.
-  \textbf{H)} \textit{i} increases and stops at $4 \nless 4$.
-  \textbf{I)-J)} \textit{j} increases and stops at $0 \ngeq 4$. Condition $i<j$ is not verified, so the algorithm ends. \\
-  Note that all elements to the right of the pivot 4 are greater or equal than it, and all the ones to its left are smaller than it.
-  By recursively repeating this process on the subarrays on each side of the pivot (excluding the pivot itself), an entirely sorted array will be obtained in the end.}
-\label{fig:rec-part2}
-\end{figure}
-
-The alorithm from Figure \ref{fig:rec-part2} is recapitulated in the following pseudocode.
+Figure \ref{fig:rec-part2} illustrates the process of partitioning around a pivot value, the number 4 in this case (selected by one of the pivot-selection methods). We start with two iterators \texttt{i} and \texttt{i}, initialized respectively at values $0$ and $N+1$, and move the iterators to each other while trying to maintain the property \texttt{A[i] < pivot} and \texttt{A[j] $\geq$ pivot}. When both iterators are failing their conditions, we swap their elements and resume. When \texttt{i} and \texttt{j} have met, we are done with the partitioning -- i.e. everything before is smaller than the pivot, and everything after is equal or larger. This is recapitulated in the following pseudocode.
 
 \begin{algorithm}
 	\caption{partition($A$, $low$, $high$)}
@@ -160,6 +126,23 @@ The alorithm from Figure \ref{fig:rec-part2} is recapitulated in the following p
 
 	swap A[i] with A[j]
 \end{algorithm}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[scale=0.4]{img/pivot_partitioning.png}
+\end{center}
+\caption{Partitioning of the array around the chosen pivot $p=4$, in yellow.
+Blue elements have not been checked yet; red elements are not compliant and yet to be swapped; green elements are in a compliant position and require no more actions. \\
+\textbf{A)} \textit{i} begins by increasing and stops at the first step, as $7 \ngeq 4$.
+\textbf{B)-C)-D)} \textit{j} starts decreasing until it encounters $2 \ngeq 4$. Condition $i<j$ is verified, so values $A[i]=7$ and $A[j]=2$ are swapped.
+\textbf{E)} \textit{i} increases up to the value $4 \nless 4$.
+\textbf{F)-G)} \textit{j} decreases until it finds $1 \ngeq 4$. Condition $i<j$ is verified, so values $A[i]=4$ and $A[j]=1$ are swapped.
+\textbf{H)} \textit{i} increases and stops at $4 \nless 4$.
+\textbf{I)-J)} \textit{j} increases and stops at $0 \ngeq 4$. Condition $i<j$ is not verified, so the algorithm ends. \\
+Note that all elements to the right of the pivot 4 are greater or equal than it, and all the ones to its left are smaller than it.
+By recursively repeating this process on the subarrays on each side of the pivot (excluding the pivot itself), an entirely sorted array will be obtained in the end.}
+\label{fig:rec-part2}
+\end{figure}
 
 
 
