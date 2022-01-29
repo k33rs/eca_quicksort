@@ -230,7 +230,7 @@ For the purpose of this project, we will consider only the planar convex hull, w
 \subsection{The Quickhull algorithm}
 The Quickhull algorithm is a variation of Quicksort for the solution of the convex hull problem.
 The algorithms works as follows:
-an initial partitioning step is done by picking the leftmost and rightmost point.
+an initial partitioning step is done by picking the leftmost and rightmost points.
 Let these two points be $p_1$ and $p_2$, respectively.
 The line connecting $p_1$ and $p_2$ splits the set in two parts.
 For each subset, we search for the farthest point from the line: let this point be $p_{max}$.
@@ -252,14 +252,14 @@ The pseudocode is given in Algorithms \ref{alg:qh1} and \ref{alg:qh2}.
     \begin{minipage}{.33\linewidth}
 		\includegraphics[width=\linewidth]{quickhull3.png}
 	\end{minipage}
-    \caption{Three steps of the Quickhull algorithm: the line $p_1p_2$ partitions the set of points in two subsets (left); the farthest point $p_{max}$ from the line is found (middle); the recursive step considers just the outer points to compute the solution (right).}
+    \caption{Three steps of the Quickhull algorithm: the line $p_1p_2$ partitions the set of points in two subsets (left); the farthest point $p_{max}$ from the line is found (middle); the recursive step considers just the outer points for the solution (right).}
     \label{fig:qh-steps}
 \end{figure}
 
 \begin{algorithm}
     \caption{Quickhull ($P$)}
     \label{alg:qh1}
-    P is a set of points with (x, y) coordinates
+    P is a set of points with coordinates (x, y)
 
     Find the points $p_1$ and $p_2$ with x-coordinates $x_{min}$ and $x_{max}$
 
