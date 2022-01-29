@@ -54,7 +54,7 @@ The sorting problem can be defined as the reordering of a sequence of elements, 
 
 Additionally, for many sorting algorithms, such as quicksort, the sequence must also be \textit{randomly accessible}.
 
-There have been many different algorithms invented for the comparison sort problem. Quicksort, originally invented\cite{hoare1962quicksort} in 1962 by C. A. R. Hoare, is still one of the most commonly used sorting algorithms. The particularly interesting nature of Quicksort is that -- unlike many other sorting algorithms it does not even attemp to achieve the theoretical lower bound of worst-case complexity, i.e. $\Omega(n\log n)$ \cite[p.~193]{clrs}. Instead it makes the trade-off to get a fast average case and a much simpler implementation, making it a very practical choice.
+There have been many different algorithms invented for the comparison sort problem. Quicksort, originally invented in 1962 by C. A. R. Hoare \cite{hoare1962quicksort}, is still one of the most commonly used sorting algorithms. The particularly interesting nature of Quicksort is that -- unlike many other sorting algorithms it does not even attemp to achieve the theoretical lower bound of worst-case complexity, i.e. $\Omega(n\log n)$ \cite[p.~193]{clrs}. Instead it makes the trade-off to get a fast average case and a much simpler implementation, making it a very practical choice.
 
 There are many variants of the quicksort algorithm, however, we will only focus on the worst-case and average-case analysis of one representative example.
 
@@ -164,7 +164,7 @@ We will also assume an extremely simplified model of execution\footnote{Referenc
 
 \subsection{Analysis of \texttt{partition} routine}
 
-Let's consider the Hoare partitioning scheme outlined in \textbf{Pseudocode \#2}. The first operation is selecting a pivot element from the sequence which is $\Theta(1)$ for every pivot selection method described in \textbf{Section \#1}.
+Let's consider the Hoare partitioning scheme outlined in Algorithm \ref{alg:p2}. The first operation is selecting a pivot element from the sequence which is $\Theta(1)$ for every pivot selection method described in \textbf{Section \#1}.
 
 Once the pivot is selected, we  are scanning the subarray under consideration\footnote{Or the whole array if this is the outermost call in the recursion.}, starting with a pointer in each boundary and moving one of the pointers towards the other in each step. Each step has exactly one comparison between the current pointees, one occasional comparison between the pointers themselves to check if they have met already, and one occasional swap between the current pointees -- i.e. each step is $\Theta(1)$.
 
@@ -174,7 +174,7 @@ This complexity estimation holds true for all the pivot selection schemes and th
 
 \subsection{Analysis of \texttt{quicksort} routine}
 
-Now, let's consider the recursive \texttt{quicksort} routine outlined in \textbf{Pseudocode \#1}. The first operation is a $\Theta(1)$ comparison to check if it is a base case. A base case requires no additional computation, i.e. $\Theta(0)$.
+Now, let's consider the recursive \texttt{quicksort} routine outlined in Algorithm \ref{alg:p1}. The first operation is a $\Theta(1)$ comparison to check if it is a base case. A base case requires no additional computation, i.e. $\Theta(0)$.
 
 Otherwise, we incur exactly one call to the \texttt{partition} routine and two calls to the \texttt{quicksort} routine with the two partitions. I.e. if the two partitions have sizes $u$ and $n-u$, the complexity of the \texttt{quicksort} routine is: $$T(n) = T_{partition}(n) + T(u) + T(n-u-1) = T(u) + T(n-u-1) + \Theta(n)$$
 
@@ -251,7 +251,7 @@ The pseudocode is given in Algorithms \ref{alg:qh1} and \ref{alg:qh2}.
     \begin{minipage}{.33\linewidth}
 		\includegraphics[width=\linewidth]{quickhull3.png}
 	\end{minipage}
-    \caption{Three steps of the Quickhull algorithm: the line $p_1p_2$ partitions the set of points in two subsets (left); the farthest point $p_{max}$ from the line is found (middle); the triangle $p_1p_2p_{max}$ shrinks the solution set (right).}
+    \caption{Three steps of the Quickhull algorithm: the line $p_1p_2$ partitions the set of points in two subsets (left); the farthest point $p_{max}$ from the line is found (middle); the recursive step considers just the outer points to compute the solution (right).}
     \label{fig:qh-steps}
 \end{figure}
 
@@ -269,7 +269,7 @@ The pseudocode is given in Algorithms \ref{alg:qh1} and \ref{alg:qh2}.
 \begin{algorithm}
   \caption{Quickhull\_onside ($P$, $p_1$, $p_2$, $s$)}
   \label{alg:qh2}
-  Let $p_{max}$ be the the point that is farthest from the line $p_1p_2$, on side $s$.
+  Let $p_{max}$ be the the point that is farthest from the line $p_1p_2$, on side $s$
 
   \If(){$p_{max}$ does not exist}{return}
 
