@@ -156,7 +156,6 @@ By recursively repeating this process on the subarrays on each side of the pivot
 \end{figure}
 
 
-
 \section{Complexity analysis}
 
 We will consider the notion of algorithm complexity\footnote{Reference?} to be the growth of its computational cost with respect to some input parameters. In general the cost can be any runtime resources the algorithm needs. Here, we will restrict the analysis to an estimation of how fast the computation time will grow as the size of the input sequence increases.
@@ -210,6 +209,12 @@ T(n) &= \frac{1}{n}\sum_{k=1}^{n}\big(T(k-1) + T(n-k)\big) + \Theta(n) \\
 \end{align*}
 
 \subsection{Analysis of randomized Quicksort}
+
+Instead of deterministic pivots, we can also select a random element from the subarray under consideration, with uniform probability. This way we arrive at the exact same analysis of the average case and the complexity order $\mathcal{O}(n\log n)$. However, there is a few notable distinctions:
+\begin{itemize}
+\item Our execution model ignored the cost of random number generation (RNG) so far. With randomized pivots, we will generate $\mathcal{O}(n\log n)$ random numbers -- which can have substantial impact depending on RNG implementation.
+\item With deterministic pivot selection, there is always some hostile permutation of the input array for which the algorithm will devolve into the worst case. With randomized pivots, for any input data the expectation is the average case. Theoretically, the RNG can still select a pivot on the boundary everytime -- however, it is extremely unlikely in practice for any decent RNG implementation and a reasonably large array.
+\end{itemize}
 
 \section{Parallel processing}
 \subsection{Scaling features}
