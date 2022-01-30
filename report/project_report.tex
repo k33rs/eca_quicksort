@@ -327,9 +327,10 @@ A scaling chart is reported in Figure \ref{fig:qh-scaling}.
 \end{figure}
 
 We can observe the gain in performance obtained by the distributed version of the algorithm:
-by doubling the number of processes, the execution time roughly halves.
-However, we can also observe the effect of over-parallelizing with respect to the problem size:
-e.g. for $N=10^2$, 32 processes perform worse than 16.
+by doubling the number of processes, the execution time decrease by a factor 2, if the problem size is large enough (e.g. $N=10^5$).
+However, for small problem sizes, we can observe the effect of over-parallelizing,
+as the execution time decreases by smaller and smaller factors, or does not decrease at all
+(e.g. for $N=10^2$, 32 processes perform worse than 16).
 
 %%%%%
 \clearpage
