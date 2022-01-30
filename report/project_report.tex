@@ -113,7 +113,7 @@ The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is used as the pivot.
 \end{itemize}
 
 \subsection{Partitioning around the pivot}
-There are several schemes to partition a list around the pivot. Two common choices are the Hoare scheme and the Lomuto scheme. For the purpose of this project, we will focus on the former.
+There are several schemes to partition a list around the pivot. Two common choices are the Hoare scheme and the Lomuto scheme \cite{qs-scheme}. For the purpose of this project, we will focus on the former.
 
 Figure \ref{fig:rec-part2} illustrates the process of partitioning around a pivot. We start with two iterators \texttt{i} and \texttt{j}, initialized at offsets $0$ and $N+1$ respectively, and move the iterators towards each other while maintaining the conditions \texttt{A[i] < pivot} and \texttt{A[j] $\geq$ pivot}. When both iterators fail their conditions, we swap \texttt{A[i]} and \texttt{A[j]}. When \texttt{i} and \texttt{j} meet, the partitioning step is complete. This process is illustrated in Algorithm \ref{alg:p2}.
 
