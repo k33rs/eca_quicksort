@@ -2,14 +2,13 @@
 
 ## Run sequential Quickhull
 
-    $ python3 -m quickhull 100 -100 100
+    $ python3 -m quickhull 100
 
-N.B.: arguments are a number of points *n* and the endpoints of the interval [*a*, *b*]. An input set of *n* 2D points (*x*, *y*) is randomly generated,
-with *x* and *y* in [*a*, *b*].
+N.B.: the argument is the number of points *n*.
 
 ## Run sequential Quickhull with interactive demo
 
-    $ python3 -m quickhull 100 -100 100 --demo
+    $ python3 -m quickhull 100 --demo
 
 ## Run distributed Quickhull
 
@@ -19,7 +18,7 @@ Running the parallel version requires *mpi4py*:
     $ cd quickhull
     $ mpiexec -n 4 python3 mpi_main.py 1000 -100 100
 
-N.B.: the *-n* argument specifies the number of processes to run.
+N.B.: the *-n* argument specifies the number of processes to run; the last two arguments are the limits in the 2D domain.
 
 ## Run scaling analysis
 
