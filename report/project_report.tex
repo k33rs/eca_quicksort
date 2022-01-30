@@ -228,6 +228,18 @@ The algorithm starts with the input sequence of size $n$ evenly distributed in $
 \item Every node collects all the local partition it received and sorts them locally, resulting in a distributed sorted permutation of the original input sequence.
 \end{itemize}
 
+\begin{figure}[H]
+\centering
+\begin{minipage}{.49\linewidth}
+\includegraphics[width=\linewidth]{par-qs-1.png}
+\end{minipage}
+\begin{minipage}{.49\linewidth}
+\includegraphics[width=\linewidth]{par-qs-2.png}
+\end{minipage}
+\caption{An illustration of how the distributed sample sorting works. On the left, the pivot selection process is shown, where each processor selects 2 candidate pivots (yellow) from the data they locally hold, then the manager process sorts all the candidate pivots to pick 2 pivots (yello with thick black border). On the right, all of the selected pivots are passed to each processor, who $p$-partition the data with these pivots (represented with shades of green) and pass each partition to the appropriate processor. Finally each processor locally sorts the accumulated partitions it received.}
+\label{fig:par-qs}
+\end{figure}
+
 The challenges in a distributed sorting algorithm like this is to optimizing the communication of the network, which usually have a much higher cost than local operations.
 
 \section{Computational geometry and the convex hull problem}
