@@ -1,4 +1,5 @@
 import argparse
+import pickle
 import matplotlib.pyplot as plt
 from .quickhull_py.data import cli_usage
 from .quickhull_py.helpers import random_points
@@ -6,8 +7,7 @@ from .quickhull_py.quickhull import quickhull, lines, sim
 
 # parse cli args
 parser = argparse.ArgumentParser(description=cli_usage['description'])
-for arg_name, arg_config in cli_usage['args'].items():
-    parser.add_argument(arg_name, **arg_config)
+parser.add_argument('n', metavar='n', type=int, help='the number of points in the set')
 parser.add_argument('--demo', action='store_true', help='run interactive demo')
 args = parser.parse_args()
 
@@ -18,15 +18,17 @@ if args.demo:
 fig = plt.figure(num='quickhull')
 ax = fig.add_subplot(111)
 ax.set_aspect('equal', adjustable='box')
-plt.tick_params(axis='x', which='both', bottom=True, top=False, labelbottom=True)
-plt.tick_params(axis='y', which='both', left=True, right=False, labelleft=True)
+plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=False)
+plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=False)
 
 if sim.demo:
     plt.ion()
     sim.plot_commit('plotting set of points')
 
-# generate set of points and add to plot
-points = random_points(args.n, args.a, args.b)
+# read set of points from file and add to plot
+with open('./quickhull/data/{}.data'.format(args.n), 'rb') as file:
+    points = pickle.load(file)
+
 sim.plot_points(points)
 
 # run algorithm

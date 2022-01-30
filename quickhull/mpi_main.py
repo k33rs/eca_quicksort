@@ -1,9 +1,9 @@
 from argparse import ArgumentParser
 from matplotlib import pyplot as plt
 from mpi4py import MPI
+import pickle
 import time
 from quickhull_py.data import cli_usage, Discretization, Domain
-from quickhull_py.helpers import random_points
 from quickhull_py.quickhull_mpi import quickhull, lines, sim
 
 if __name__ == "__main__":
@@ -22,8 +22,9 @@ if __name__ == "__main__":
     discretization = Discretization(start, start, nx, nx)
     domain = Domain(comm, discretization)
     domain.print()
-    # generate set of points
-    points_global = random_points(args.n, start, end) if rank == 0 else None
+    # read set of points from file
+    with open('./data/{}.data'.format(args.n), 'rb') as file:
+        points_global = pickle.load(file)
     points_global = comm.bcast(points_global)
     points_local = list(filter(lambda p: domain.includes(p), points_global))
     # run algorithm - measure time (sec)
