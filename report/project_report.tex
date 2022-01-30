@@ -44,9 +44,12 @@
 
 \section{Introduction} \label{introduction}
 
-Sorting is a ubiquitous problem in computer science, with applications in practically every subfield -- data structures, computation geometry, search engines, just to give a few examples.
+Sorting is a ubiquitous problem in computer science, with applications in practically every subfield
+(e.g. data structures, computation geometry, search engines, etc.).
 
-The sorting problem can be defined as the reordering of a sequence of elements, based on some ordering criterion. More specifically, to be able to sort it, a sequence must possess following two properties\footnote{Either of these requirements can be relaxed for a relaxed variant of the sorting problem.}:
+The sorting problem can be defined as the reordering of a sequence of elements, based on some ordering criterion.
+More specifically, to be able to sort it, a sequence must possess following two 
+properties\footnote{Either of these requirements can be relaxed for a relaxed variant of the sorting problem.}:
 
 \begin{itemize}
 \item Its elements are \textit{swappable}: So that the list can be permuted in-place\footnote{I.e. modifying the original sequence object, instead of creating a new one.}.
@@ -65,7 +68,9 @@ There are many variants of the Quicksort algorithm, however, we will only focus 
 
 Quicksort belongs to the family of \textit{partition sort} algorithms, where a partitioning routine is called recursively until the whole sequence is sorted.
 
-Given an array $A[1,.....,N]$, the partitioning algorithm should split a permutation of it, $A'$, into two partitions $U=A'[1,.....,p]$ and $V=A'[p+1,.....,N]$ such that $U[i] \leq V[j] \;\, \forall \; i \in [1,p], j \in [p+1,N]$. By recursively partitioning U and V themselves, base cases will eventually be reached, consisting of single-element or empty arrays, which are already sorted. Figure \ref{fig:rec-part} illustrates the recursive routine.
+Given an array $A[1,.....,N]$, the partitioning algorithm splits a permutation of it, $A'$, into two partitions $U=A'[1,.....,p]$ and $V=A'[p+1,.....,N]$
+such that $U[i] \leq V[j] \;\, \forall \; i \in [1,p], j \in [p+1,N]$. By recursively partitioning U and V themselves, base cases will eventually be reached,
+consisting of single-element or empty arrays, which are already sorted. Figure \ref{fig:rec-part} illustrates the recursive routine.
 
 \begin{figure}[H]
 \centering
@@ -76,7 +81,10 @@ The base case of a branch is reached when an array is reduced to one or zero ele
 \label{fig:rec-part}
 \end{figure}
 
-The following pseudocode recursively sorts a given subarray of $A$. It references a \texttt{partition} routine which will be discussed in the following sections. Also, the \texttt{partition} routine will move one element (called \textit{pivot}) to its final location, so that element can be excluded from the recursive calls.
+The following pseudocode recursively sorts a given subarray of $A$.
+It references a \texttt{partition} routine which will be discussed in the following sections.
+Also, the \texttt{partition} routine will move one element (called \textit{pivot}) to its final location,
+so that element can be excluded from the recursive calls.
 
 \begin{algorithm}
 \caption{Quicksort ($A$, $low$, $high$)}
@@ -86,11 +94,12 @@ quicksort(A, low, pivot-1)\\
 quicksort(A, pivot+1, high)}
 \end{algorithm}
 
-
 \subsection{Pivot selection}
-The partitioning in Quicksort relies on pivoting. This consists in picking a value $\gamma$ to be our pivot. Given an array $A$, we permute it such that every element before $\gamma$ is smaller than it, and every one after it is larger. The internal order in these subarrays is irrelevant, as it will be addressed in further iterations of the algorithm.
-
-Clearly, the pivot choice will have an impact on the efficiency of the algorithm. We divide the selection methods into two categories: one-step and multi-step. These are discussed using an example array $A[1, ..., N]$, as follows.
+The partitioning in Quicksort relies on pivoting. This consists in picking a value $\gamma$ to be our pivot.
+Given an array $A$, we permute it such that every element before $\gamma$ is smaller than it, and every one after it is larger.
+The internal order in these subarrays is irrelevant, as it will be addressed in further iterations of the algorithm.
+Clearly, the pivot choice has an impact on the efficiency of the algorithm. We divide the selection methods into two categories: one-step and multi-step.
+These are discussed using an example array $A[1, ..., N]$, as follows.
 
 \subsubsection{One-step selection}
 These methods only require choosing a single value at each iteration and using it as the pivot. Some examples are:
@@ -113,9 +122,13 @@ The median of $\{A[r_{1}],.....,A[r_{T}]\}$ is used as the pivot.
 \end{itemize}
 
 \subsection{Partitioning around the pivot}
-There are several schemes to partition a list around the pivot. Two common choices are the Hoare scheme and the Lomuto scheme \cite{qs-scheme}. For the purpose of this project, we will focus on the former.
+There are several schemes to partition a list around the pivot. Two common choices are the Hoare scheme and the Lomuto scheme \cite{qs-scheme}.
+For the purpose of this project, we will focus on the former.
 
-Figure \ref{fig:rec-part2} illustrates the process of partitioning around a pivot. We start with two iterators \texttt{i} and \texttt{j}, initialized at offsets $0$ and $N+1$ respectively, and move the iterators towards each other while maintaining the conditions \texttt{A[i] < pivot} and \texttt{A[j] $\geq$ pivot}. When both iterators fail their conditions, we swap \texttt{A[i]} and \texttt{A[j]}. When \texttt{i} and \texttt{j} meet, the partitioning step is complete. This process is illustrated in Algorithm \ref{alg:p2}.
+Figure \ref{fig:rec-part2} illustrates the process of partitioning around a pivot. We start with two iterators \texttt{i} and \texttt{j},
+initialized at offsets $0$ and $N+1$ respectively, and move the iterators towards each other while maintaining the conditions \texttt{A[i] < pivot}
+and \texttt{A[j] $\geq$ pivot}. When both iterators fail their conditions, we swap \texttt{A[i]} and \texttt{A[j]}.
+When \texttt{i} and \texttt{j} meet, the partitioning step is complete. This process is defined in Algorithm \ref{alg:p2}.
 
 \begin{algorithm}
 \caption{partition($A$, $low$, $high$)}
@@ -237,8 +250,7 @@ However, it is extremely unlikely in practice for any decent RNG implementation 
 
 \section{Parallelizing Quicksort}
 
-Quicksort is fairly simple to parallelize with a few modifications. One distributed approach, called \textit{sample sorting}, is briefly outlined here.
-
+Quicksort is fairly simple to parallelize, with a few modifications. Here we present a distributed approach, called \textit{sample sorting}.
 The algorithm starts with the input sequence of size $n$, evenly distributed over $p$ processors, connected by some network.
 Every processor holds a partition of roughly $\frac{n}{p}$ size.
 The procedure of the distributed version of Quicksort is given in Algorithm \ref{alg:qs-dist}.
