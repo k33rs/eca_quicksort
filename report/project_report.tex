@@ -190,8 +190,6 @@ T_{worst}(n) &= \sum_{k=1}^n\Theta(k) = \Theta(n^2)
 For deterministic pivot selection methods, there is always some hostile input data for which the algorithm will take the worst case. However, in practical scenarios, running into a hostile input data is fairly unlikely. Instead, we are often interested in the average case analysis that accounts for the prior distribution of the input data to compute the average cost.
 
 Since the locations of the pivots determine the runtime of quicksort for a given input data and we don't have any other information about the pivot, we will consider the prior distribution of the pivot location at each call to \texttt{quicksort} routine to be uniform -- i.e. if the size of the given array is $n$, then its final location can be anywhere between and including 1 and n. So, the average sorting time will be --
-
-Since the locations of the pivots determine the runtime of quicksort for a given input data and we don't have any other information about the pivot, we will consider the prior distribution of the pivot location at each call to \texttt{quicksort} routine to be uniform -- i.e. if the size of the given array is $n$, then its final location can be anywhere between and including 1 and n. So, the average sorting time will be --
 \begin{align*}
 T(n) &= \frac{1}{n}\sum_{k=1}^{n}\big(T(k-1) + T(n-k)\big) + \Theta(n) \\
 &= \frac{1}{n}\big(\sum_{k=1}^{n}T(k-1) + \sum_{k=1}^{n}T(k-1)\big) + \Theta(n) \\
