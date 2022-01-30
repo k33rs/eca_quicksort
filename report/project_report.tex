@@ -55,7 +55,7 @@ The sorting problem can be defined as the reordering of a sequence of elements, 
 
 Additionally, for many sorting algorithms, such as quicksort, the sequence must also be \textit{randomly accessible}.
 
-There have been many different algorithms invented for the comparison sort problem. Quicksort, originally invented in 1962 by C. A. R. Hoare \cite{hoare1962quicksort}, is still one of the most commonly used sorting algorithms. The particularly interesting nature of Quicksort is that -- unlike many other sorting algorithms it does not even attemp to achieve the theoretical lower bound of worst-case complexity, i.e. $\Omega(n\log n)$ \cite[p.~193]{clrs}. Instead it makes the trade-off to get a fast average case and a much simpler implementation, making it a very practical choice.
+There have been many different algorithms invented for the comparison sort problem. Quicksort, originally invented in 1962 by C. A. R. Hoare \cite{hoare1962quicksort}, is still one of the most commonly used sorting algorithms. The particularly interesting nature of Quicksort is that -- unlike many other sorting algorithms it does not even attempt to achieve the theoretical lower bound of worst-case complexity, i.e. $\Omega(n\log n)$ \cite[p.~193]{clrs}. Instead it makes the trade-off to get a fast average case and a much simpler implementation, making it a very practical choice.
 
 There are many variants of the quicksort algorithm, however, we will only focus on the worst-case and average-case analysis of one representative example.
 
@@ -217,9 +217,20 @@ Instead of deterministic pivots, we can also select a random element from the su
 \item With deterministic pivot selection, there is always some hostile permutation of the input array for which the algorithm will devolve into the worst case. With randomized pivots, for any input data the expectation is the average case. Theoretically, the RNG can still select a pivot on the boundary everytime -- however, it is extremely unlikely in practice for any decent RNG implementation and a reasonably large array.
 \end{itemize}
 
-\section{Parallel processing}
-\subsection{Scaling features}
-\subsection{Parallelizing Quicksort}
+\section{Parallelizing Quicksort}
+
+Quicksort is fairly simple to parallelize / distribute with a few modifications. One distributed approach, called \textit{sample sorting} is briefly outlined here.
+
+The algorithm starts with the input sequence of size $n$ evenly distributed in $p$ nodes connected by some network -- i.e. a single node holds only a partition of roughtly $\frac{n}{p}$ size. Then it goes through the following steps --
+\begin{itemize}
+\item Each node selects $s$ randomly sampled elements as candidate pivots from the data it holds, and sends them to the \textit{master} / manager node.
+\item The manager node sorts the candidate pivots locally and select $p-1$ evenly spaced pivots, and sends the selected pivots to every worker node.
+\item Every node locally $p$-partitions its own data using the $p-1$ pivots received from the manager node. It may happen that some partitions turn out empty this way.
+\item Evey node sends its local $k^{th}$ partition to the $k^{th}$ node in the network.
+\item Every node collects all the local partition it received and sorts them locally, resulting in a distributed sorted permutation of the original input sequence.
+\end{itemize}
+
+The challenges in a distributed sorting algorithm like this is to optimizing the communication of the network, which usually have a much higher cost than local operations.
 
 \section{Computational geometry and the convex hull problem}
 Computational geometry is the study of algorithms for the solution of geometric problems in the Euclidean space \cite{jaja2000perspective}.
