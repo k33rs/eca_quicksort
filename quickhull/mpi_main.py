@@ -26,7 +26,7 @@ if __name__ == "__main__":
     with open('./data/{}.data'.format(args.n), 'rb') as file:
         points_global = pickle.load(file)
     points_global = comm.bcast(points_global)
-    points_local = list(filter(lambda p: domain.includes(p), points_global))
+    points_local = set(filter(lambda p: domain.includes(p), points_global))
     # run algorithm - measure time (sec)
     timespent = - time.perf_counter()
     hull = quickhull(points_local, comm)
