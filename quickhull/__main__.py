@@ -2,7 +2,6 @@ import argparse
 import pickle
 import matplotlib.pyplot as plt
 from .quickhull_py.data import cli_usage
-from .quickhull_py.helpers import random_points
 from .quickhull_py.quickhull import quickhull, lines, sim
 
 # parse cli args
