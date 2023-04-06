@@ -72,11 +72,5 @@ def project(p1, p2, p):
     on the line joining points p1 and p2.
     """
     p1v, p2v, pv = np.array(p1), np.array(p2), np.array(p)
-    a1 = p2v - p1v
-    a2 = a1.copy()[::-1]
-    a2[0] = -a2[0]
-
-    a = [a1, a2]
-    b = [pv @ a1, la.det([a1, p1v])]
-
-    return la.solve(a, b)
+    a = ((pv-p1v) @ (p2v-p1v)) / la.norm(p2v-p1v)**2
+    return (1-a)*p1v + a*p2v
