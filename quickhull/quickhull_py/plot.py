@@ -21,17 +21,28 @@ class Simulation:
         line, = plt.plot([p1[0], p2[0]], [p1[1], p2[1]], '-', color=color, zorder=10)
         return line
 
-    def plot_commit(self, print_msg=''):
+    def plot_commit(self, print_msg='', prompt=True):
         """Apply changes to plot."""
         if self.demo['interactive']:
-            print(print_msg)
-            inp = input('Press Enter to continue (q to quit): ')
-            print()
-            if inp == 'q':
-                self.__ffw()
+            if not plt.isinteractive():
+                plt.ion()
+            if prompt:
+                print(print_msg)
+                inp = input('Press Enter to continue (q to quit): ')
+                print()
+                if inp == 'q':
+                    self.__ffw()
             plt.show()
         else:
             plt.pause(0.1)
+
+    @staticmethod
+    def plot_close():
+        input('Press Enter to quit: ')
+        print('Bye bye')
+        plt.ioff()
+        plt.close()
+
 
     def step_in(self, p1, p2, print_msg, color=None):
         self.plot_commit(print_msg)

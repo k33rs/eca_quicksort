@@ -21,8 +21,7 @@ plt.tick_params(axis='x', which='both', bottom=False, top=False, labelbottom=Fal
 plt.tick_params(axis='y', which='both', left=False, right=False, labelleft=False)
 
 if sim.demo:
-    plt.ion()
-    sim.plot_commit('plotting set of points')
+    sim.plot_commit('plotting set of points', prompt=False)
 
 # read set of points from file and add to plot
 with open(f'./quickhull/data/{args.n}.data', 'rb') as file:
@@ -42,5 +41,5 @@ if sim.demo is None:
     plt.savefig('convex-hull.png')
 
 if sim.demo:
-    plt.ioff()
-    plt.show()
+    sim.plot_commit(prompt=False)
+    sim.plot_close()
