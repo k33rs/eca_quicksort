@@ -23,7 +23,7 @@ if __name__ == "__main__":
     domain = Domain(comm, discretization)
     domain.print()
     # read set of points from file
-    with open('./data/{}.data'.format(args.n), 'rb') as file:
+    with open(f'./data/{args.n}.data', 'rb') as file:
         points_global = pickle.load(file)
     points_global = comm.bcast(points_global)
     points_local = set(filter(lambda p: domain.includes(p), points_global))
@@ -48,5 +48,5 @@ if __name__ == "__main__":
         plt.savefig('convex-hull.png')
 
         file = open('plot.data', 'a')
-        file.write('{} {}\n'.format(size, timespent))
+        file.write(f'{size} {timespent}\n')
         file.close()

@@ -42,5 +42,5 @@ class Simulation:
         line.remove()
 
     def step_sol(self, p1, p2):
-        self.plot_commit('{} and {} are in the convex hull'.format(p1, p2))
+        self.plot_commit(f'{p1} and {p2} are in the convex hull')
         self.plot_line(p1, p2, color='royalblue')

@@ -11,5 +11,5 @@ if __name__ == "__main__":
 
     points = random_points(args.n, args.a, args.b)
 
-    with open('data/{}.data'.format(args.n), 'wb') as file:
+    with open(f'data/{args.n}.data', 'wb') as file:
         pickle.dump(points, file)

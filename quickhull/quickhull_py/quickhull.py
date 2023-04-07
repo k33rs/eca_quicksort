@@ -26,9 +26,9 @@ def quickhull_onside(points, p1, p2, side):
         return
 
     if sim.demo:
-        line = sim.step_in(p1, p2, 'plotting line from {} to {}'.format(p1, p2))
+        line = sim.step_in(p1, p2, f'plotting line from {p1} to {p2}')
         proj = project(p1, p2, pmax)
-        perp = sim.step_in(pmax, proj, 'partitioning line from {} to {}'.format(p1, p2))
+        perp = sim.step_in(pmax, proj, f'partitioning line from {p1} to {p2}')
 
     # find convex hull points outside the triangle
     remove_triangle(points, pmax, p1, p2)
@@ -36,8 +36,8 @@ def quickhull_onside(points, p1, p2, side):
     quickhull_onside(points, pmax, p2, -find_side(pmax, p2, p1))
 
     if sim.demo:
-        sim.step_out(perp, 'removing partitioning of line from {} to {}'.format(p1, p2))
-        sim.step_out(line, 'removing line from {} to {}'.format(p1, p2))
+        sim.step_out(perp, f'removing partitioning of line from {p1} to {p2}')
+        sim.step_out(line, f'removing line from {p1} to {p2}')
 
 def quickhull(points):
     """

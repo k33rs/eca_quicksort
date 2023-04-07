@@ -132,8 +132,8 @@ class Domain:
         """Print domain decomposition specifics"""
         if self._rank == 0:
             print(
-                "{:d} processes decomposed into a".format(self._size),
-                "{:d} x {:d} Cartesian topology".format(self._dims[0], self._dims[1]),
+                f'{self._size:d} processes decomposed into a',
+                f'{self._dims[0]:d} x {self._dims[1]:d} Cartesian topology',
                 flush=True
             )
         self._comm.Barrier()
@@ -142,9 +142,9 @@ class Domain:
             if self._rank == irank:
                 print(
                     MPI.Get_processor_name(),
-                    "rank {:2d}/{:2d} :".format(self._rank, self._size),
-                    "coords ({:2d},{:2d})".format(self._coords[0], self._coords[1]),
-                    "start ({:4d},{:4d})".format(self._startx, self._starty),
-                    "end ({:4d},{:4d})".format(self._endx, self._endy),
+                    f'rank {self._rank:2d}/{self._size:2d} :',
+                    f'coords ({self._coords[0]:2d},{self._coords[1]:2d})',
+                    f'start ({self._startx:4d},{self._starty:4d})',
+                    f'end ({self._endx:4d},{self._endy:4d})',
                     flush=True
                 )

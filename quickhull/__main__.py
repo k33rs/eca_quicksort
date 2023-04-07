@@ -25,7 +25,7 @@ if sim.demo:
     sim.plot_commit('plotting set of points')
 
 # read set of points from file and add to plot
-with open('./quickhull/data/{}.data'.format(args.n), 'rb') as file:
+with open(f'./quickhull/data/{args.n}.data', 'rb') as file:
     points = pickle.load(file)
 
 sim.plot_points(points)
