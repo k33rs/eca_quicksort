@@ -13,12 +13,12 @@ class Simulation:
     @staticmethod
     def plot_points(points):
         """Plot a set of points."""
-        plt.plot([p[0] for p in points], [p[1] for p in points], '.', color='crimson', zorder=20)
+        plt.plot(*zip(*points), '.', color='crimson', zorder=20)
 
     @staticmethod
     def plot_line(p1, p2, color=None):
         """Plot a line between points p1 and p2."""
-        line, = plt.plot([p1[0], p2[0]], [p1[1], p2[1]], '-', color=color, zorder=10)
+        line, = plt.plot(*zip(p1, p2), '-', color=color, zorder=10)
         return line
 
     def plot_commit(self, print_msg='', prompt=True):
